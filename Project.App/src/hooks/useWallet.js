@@ -53,6 +53,34 @@ export function useWallet() {
     setError(null)
   }, [])
 
+  const switchNetwork = useCallback(async (targetChainId) => {
+    if (!hasWallet) return
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${targetChainId.toString(16)}` }],
+      })
+    } catch (err) {
+      if (err.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: `0x${targetChainId.toString(16)}`,
+              chainName: 'Hardhat',
+              rpcUrls: ['http://127.0.0.1:8545'],
+              nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+            }],
+          })
+        } catch (addErr) {
+          setError(addErr.message)
+        }
+      } else {
+        setError(err.message)
+      }
+    }
+  }, [hasWallet])
+
   useEffect(() => {
     if (!hasWallet) return
 
@@ -100,5 +128,6 @@ export function useWallet() {
     error,
     connect,
     disconnect,
+    switchNetwork,
   }
 }

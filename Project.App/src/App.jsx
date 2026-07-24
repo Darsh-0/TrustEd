@@ -1,10 +1,19 @@
+import { useState } from 'react'
 import { useWallet } from './hooks/useWallet'
+import { useRegistry } from './hooks/useRegistry'
 import { WalletConnect } from './components/WalletConnect'
+import { EducatorStatus } from './components/EducatorStatus'
+import { AddIssuerForm } from './components/AddIssuerForm'
+import { RegistryTable } from './components/RegistryTable'
 import './App.css'
 
 function App() {
   const wallet = useWallet()
-  const { isConnected, networkName, truncatedAddress, address } = wallet
+  const { isConnected, networkName, truncatedAddress } = wallet
+  const registry = useRegistry(wallet)
+  const { count, isEducator, isOwner, loading, error, txPending, notConfigured, wrongNetwork, educators, addEducator, removeEducator } = registry
+
+  const [showAddForm, setShowAddForm] = useState(false)
 
   return (
     <>
@@ -19,7 +28,13 @@ function App() {
       <section id="hero">
         <div className="hero-left">
           <p className="hero-eyebrow">On-chain · Credentials · Trust</p>
-          <h1>Verified<br />Educator<br />Registry</h1>
+          <h1>
+            Verified
+            <br />
+            Educator
+            <br />
+            Registry
+          </h1>
           <p className="hero-sub">
             A permanent on-chain registry of trusted educational institutions.
             Issue and verify academic credentials anyone can check.
@@ -38,14 +53,15 @@ function App() {
               <div className="conn-divider" />
               <div className="conn-stats">
                 <div className="conn-stat">
-                  <span className="conn-stat-val">0</span>
+                  <span className="conn-stat-val">{count}</span>
                   <span className="conn-stat-key">Issuers</span>
                 </div>
                 <div className="conn-stat">
-                  <span className="conn-stat-val">0</span>
+                  <span className="conn-stat-val">{count}</span>
                   <span className="conn-stat-key">Active</span>
                 </div>
               </div>
+              <EducatorStatus isEducator={isEducator} loading={loading} error={error} />
               <button className="btn-disconnect" onClick={wallet.disconnect}>
                 Disconnect
               </button>
@@ -56,33 +72,65 @@ function App() {
             </p>
           )}
         </div>
+      </section>
+
+      {wrongNetwork && (
+        <div className="network-banner">
+          Wrong network — you're on {networkName}. Please switch to the local Hardhat network (chain 31337).
+          <button className="btn-switch-network" onClick={() => wallet.switchNetwork(31337)}>
+            Switch Network
+          </button>
+        </div>
+      )}
+
+      {notConfigured && (
+        <div className="network-banner">
+          Registry not configured — set VITE_REGISTRY_ADDRESS in .env
+        </div>
+      )}
 
       <section id="registry">
         <div className="registry-bar">
           <div className="bar-left">
             <span className="bar-title">Issuer Directory</span>
-            <span className="bar-count">0 registered</span>
+            <span className="bar-count">{count} registered</span>
           </div>
-          {isConnected && (
-            <button className="btn-add">+ Add Issuer</button>
+          {isConnected && isOwner && !wrongNetwork && (
+            <button className="btn-add" onClick={() => setShowAddForm(!showAddForm)}>
+              {showAddForm ? 'Cancel' : '+ Add Issuer'}
+            </button>
           )}
         </div>
 
-        {isConnected ? (
+        {showAddForm && isOwner && (
+          <AddIssuerForm
+            onAdd={addEducator}
+            pending={txPending}
+            onClose={() => setShowAddForm(false)}
+          />
+        )}
+
+        {isConnected && !wrongNetwork && !notConfigured ? (
           <div className="registry-table">
             <div className="table-head">
               <span>Address</span>
               <span>Name</span>
               <span>Status</span>
               <span>Registered</span>
+              <span>Actions</span>
             </div>
-            <div className="table-empty">
-              No issuers registered yet. Add the first verified educator to get started.
-            </div>
+            <RegistryTable
+              educators={educators}
+              isOwner={isOwner}
+              onRemove={removeEducator}
+              pending={txPending}
+            />
           </div>
         ) : (
           <div className="registry-gate">
-            Connect your wallet to view the issuer directory.
+            {isConnected
+              ? 'Connect to the correct network to view the directory.'
+              : 'Connect your wallet to view the issuer directory.'}
           </div>
         )}
       </section>
