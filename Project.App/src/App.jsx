@@ -1,120 +1,92 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { useWallet } from './hooks/useWallet'
+import { WalletConnect } from './components/WalletConnect'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const wallet = useWallet()
+  const { isConnected, networkName, truncatedAddress, address } = wallet
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      <header id="app-header">
+        <div className="brand">
+          <div className="brand-dot" />
+          <span className="brand-name">IssuerRegistry</span>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+        <WalletConnect wallet={wallet} />
+      </header>
+
+      <section id="hero">
+        <div className="hero-left">
+          <p className="hero-eyebrow">On-chain · Credentials · Trust</p>
+          <h1>Verified<br />Educator<br />Registry</h1>
+          <p className="hero-sub">
+            A permanent on-chain registry of trusted educational institutions.
+            Issue and verify academic credentials anyone can check.
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+        <div className="hero-right">
+          {isConnected ? (
+            <div className="conn-card">
+              <div className="conn-card-head">
+                <span className="live-dot" />
+                <span className="conn-label">Connected</span>
+              </div>
+              <div className="conn-address">{truncatedAddress}</div>
+              <span className="conn-network">{networkName}</span>
+              <div className="conn-divider" />
+              <div className="conn-stats">
+                <div className="conn-stat">
+                  <span className="conn-stat-val">0</span>
+                  <span className="conn-stat-key">Issuers</span>
+                </div>
+                <div className="conn-stat">
+                  <span className="conn-stat-val">0</span>
+                  <span className="conn-stat-key">Active</span>
+                </div>
+              </div>
+              <button className="btn-disconnect" onClick={wallet.disconnect}>
+                Disconnect
+              </button>
+            </div>
+          ) : (
+            <p className="hero-prompt">
+              Connect your wallet above to interact with the registry.
+            </p>
+          )}
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      <section id="registry">
+        <div className="registry-bar">
+          <div className="bar-left">
+            <span className="bar-title">Issuer Directory</span>
+            <span className="bar-count">0 registered</span>
+          </div>
+          {isConnected && (
+            <button className="btn-add">+ Add Issuer</button>
+          )}
+        </div>
+
+        {isConnected ? (
+          <div className="registry-table">
+            <div className="table-head">
+              <span>Address</span>
+              <span>Name</span>
+              <span>Status</span>
+              <span>Registered</span>
+            </div>
+            <div className="table-empty">
+              No issuers registered yet. Add the first verified educator to get started.
+            </div>
+          </div>
+        ) : (
+          <div className="registry-gate">
+            Connect your wallet to view the issuer directory.
+          </div>
+        )}
+      </section>
     </>
   )
 }
