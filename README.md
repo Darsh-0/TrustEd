@@ -1,6 +1,5 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-Express_5-339933?logo=nodedotjs&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5.2-000000?logo=express&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-26-339933?logo=nodedotjs&logoColor=white)
 ![Ethers.js](https://img.shields.io/badge/Ethers.js-6.17-2535A0?logo=ethers&logoColor=white)
 ![Resend](https://img.shields.io/badge/Resend-6.18-000000?logo=resend&logoColor=white)
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)
