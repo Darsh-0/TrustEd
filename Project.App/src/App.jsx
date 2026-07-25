@@ -7,7 +7,6 @@ import { RegistryPage } from './pages/RegistryPage'
 import { IssueDegreePage } from './pages/IssueDegreePage'
 import PocPage from './pages/POC.jsx'
 import ClaimPage from './pages/ClaimPage.jsx'
-import './App.css'
 import { VerifyPage } from './pages/VerifyPage'
 
 function App() {
