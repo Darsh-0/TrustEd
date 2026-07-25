@@ -42,7 +42,7 @@ After deployment **no EOA holds any privileged role anywhere in the system.** Th
 | `AccreditationGovernor` | OZ Governor v5 (settings + simple counting + votes + timelock control) with an **absolute member-count quorum** (default 3) that governance itself can amend via `setQuorum`. `proposalThreshold = 1`: any member may propose. |
 | `TimelockController` | Owner of the token and the registry. Only the governor may propose/cancel; anyone may execute a matured operation. |
 
-> **Playground UI:** an interactive frontend (role-switcher, live on-chain activity feed, chain-time controls) lives in [`../university-dao-frontend`](../university-dao-frontend/) — `npm install && npm run dev` there once this repo is deployed to a local anvil.
+> **Playground UI:** an interactive tool (role-switcher, live on-chain activity feed, chain-time controls) lives in [`../university-dao-tool`](../university-dao-tool/) — run `./4-start-dao-tool.sh` from the repo root once the chain is up.
 
 ## Quickstart
 
