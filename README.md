@@ -1,5 +1,7 @@
 # Web3 Hackathon — DAO-accredited academic credentials
 
+<img width="1536" height="1024" alt="ChatGPT Image Jul 25, 2026, 03_49_07 PM" src="https://github.com/user-attachments/assets/9f927b4b-d163-4a82-b57a-bedb9499dd46" />
+
 Four pieces:
 
 | | |
