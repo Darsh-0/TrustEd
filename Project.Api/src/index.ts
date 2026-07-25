@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { isAddress } from "ethers";
+import { authRouter } from "./routes/auth.js";
+import { transferRouter } from "./routes/transfer.js";
 import {
     RegistryNotConfigured,
     getUniversity,
@@ -69,6 +71,9 @@ function sendError(res: express.Response, err: unknown) {
     const message = err instanceof Error ? err.message : "Unknown error";
     res.status(502).json({ error: `DAO registry read failed: ${message}` });
 }
+
+app.use("/auth", authRouter);
+app.use("/", transferRouter);
 
 const PORT = process.env.PORT || 5000;
 

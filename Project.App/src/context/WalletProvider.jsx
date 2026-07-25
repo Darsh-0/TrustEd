@@ -1,59 +1,6 @@
-<<<<<<< HEAD
-import { useState, useEffect } from 'react';
-import { BrowserProvider } from 'ethers';
-
-export function useWallet() {
-  const [account, setAccount] = useState(null);
-  const [provider, setProvider] = useState(null);
-  const [error, setError] = useState(null);
-
-  const connect = async () => {
-    if (!window.ethereum) {
-      setError('MetaMask not installed');
-      return;
-    }
-
-    try {
-      const accounts = await window.ethereum.request({
-        method: 'eth_requestAccounts'
-      });
-
-      const provider = new BrowserProvider(window.ethereum);
-      setProvider(provider);
-      setAccount(accounts[0]);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const disconnect = () => {
-    setAccount(null);
-    setProvider(null);
-  };
-
-  useEffect(() => {
-    if (window.ethereum) {
-      const handleAccountsChanged = (accounts) => {
-        if (accounts.length === 0) {
-          disconnect();
-        } else {
-          setAccount(accounts[0]);
-        }
-      };
-
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
-
-      return () => {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-      };
-    }
-  }, []);
-
-  return { account, provider, error, connect, disconnect };
-=======
 import { useState, useEffect, useCallback } from 'react'
 import { BrowserProvider } from 'ethers'
+import { WalletContext } from './wallet-context'
 
 const NETWORK_NAMES = {
   1: 'Ethereum',
@@ -72,7 +19,7 @@ function truncateAddress(address) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function useWallet() {
+export function WalletProvider({ children }) {
   const [address, setAddress] = useState(null)
   const [chainId, setChainId] = useState(null)
   const [isConnecting, setIsConnecting] = useState(false)
@@ -106,6 +53,34 @@ export function useWallet() {
     setChainId(null)
     setError(null)
   }, [])
+
+  const switchNetwork = useCallback(async (targetChainId) => {
+    if (!hasWallet) return
+    try {
+      await window.ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: `0x${targetChainId.toString(16)}` }],
+      })
+    } catch (err) {
+      if (err.code === 4902) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: `0x${targetChainId.toString(16)}`,
+              chainName: 'Hardhat',
+              rpcUrls: ['http://127.0.0.1:8545'],
+              nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+            }],
+          })
+        } catch (addErr) {
+          setError(addErr.message)
+        }
+      } else {
+        setError(err.message)
+      }
+    }
+  }, [hasWallet])
 
   useEffect(() => {
     if (!hasWallet) return
@@ -143,7 +118,7 @@ export function useWallet() {
     }
   }, [hasWallet])
 
-  return {
+  const value = {
     address,
     chainId,
     networkName: chainId ? getNetworkName(chainId) : null,
@@ -154,6 +129,8 @@ export function useWallet() {
     error,
     connect,
     disconnect,
+    switchNetwork,
   }
->>>>>>> a7c212a3846cd03731e5c27fc2bc2558585e04e8
+
+  return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>
 }
