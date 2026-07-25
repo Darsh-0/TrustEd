@@ -119,7 +119,8 @@ authRouter.post('/present', (req, res) => {
 	}
 	const token = randomBytes(24).toString('hex')
 	presentations.set(token, { presentation, expires: Date.now() + SHARE_TTL_MS })
-	res.json({ shareUrl: `http://localhost:5173/verify?token=${token}` })
+	const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+	res.json({ shareUrl: `${frontendUrl}/verify?token=${token}` })
 })
 
 // 3) Employer opens the link → redeem + run the five checks

@@ -50,7 +50,8 @@ transferRouter.post('/issue', async (req, res) => {
 	}
 
 	const token = randomBytes(24).toString('hex')
-	const link = `http://localhost:5173/claim?token=${token}`
+	const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173'
+	const link = `${frontendUrl}/claim?token=${token}`
 	pending.set(token, { credential, signature, expires: Date.now() + 7 * 864e5 }) // 7 days
 	
 	await sendEmail(email, credential, link)
