@@ -1,23 +1,12 @@
-import { Link } from 'react-router-dom'
-import logo from '../assets/ChatGPT_Image_Jul_25_2026_03_49_07_PM.png'
-import studentNormal from '../assets/normal.png'
-import studentTicked from '../assets/Tick.png'
-import { WalletConnect } from '../components/WalletConnect'
+import { Link } from "react-router-dom";
+import studentNormal from "../assets/normal.png";
+import studentTicked from "../assets/Tick.png";
 
 // TrustEd brand colours — primary deep green: #17463C
-
-const FEATURES = [
-  'Integrates automatically with university systems',
-  'Decentralized identity for every graduate',
-  'Tamper-proof blockchain validation',
-  'Instant verification for global employers',
-]
-
 export function LandingPage() {
   return (
-    <div className="min-h-screen bg-white text-neutral-900">
+    <div className="max-h-screen bg-white text-neutral-900">
       {/* ── Top bar ─────────────────────────────────────────── */}
-      
 
       {/* ── Hero ────────────────────────────────────────────── */}
       <section className="flex flex-col items-center px-6 pb-24 pt-12 text-center sm:pt-16">
@@ -54,14 +43,7 @@ export function LandingPage() {
             Verify Degree
           </Link>
         </div>
-
-        {/* Feature lines */}
-        <ul className="mt-16 space-y-3 text-sm font-semibold text-[#1b3a4b]">
-          {FEATURES.map((feature) => (
-            <li key={feature}>{feature}</li>
-          ))}
-        </ul>
       </section>
     </div>
-  )
+  );
 }

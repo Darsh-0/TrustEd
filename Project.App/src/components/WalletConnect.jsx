@@ -26,10 +26,10 @@ export function WalletConnect() {
 
   return (
     <div className="flex items-center gap-3">
-      {error && <span className="text-xs text-red-400">{error}</span>}
+      {error && <span className="text-xs text-red-600">{error}</span>}
       {isConnected ? (
         <>
-          <span className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 font-mono text-xs text-zinc-300">
+          <span className="rounded-lg border border-neutral-200 bg-neutral-100 px-3 py-2 font-mono text-xs text-neutral-700">
             {truncatedAddress}
           </span>
           <button className="btn-outline" onClick={disconnect}>
