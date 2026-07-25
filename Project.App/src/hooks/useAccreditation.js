@@ -20,7 +20,7 @@ const STATUS_ACCREDITED = 2;
 // Cache
 // -----------------------------------------------------------------------------
 
-const CACHE_TTL = 60_000; // 60 seconds
+const CACHE_TTL = 300_000; // 5 mins
 
 let registryCache = null;
 let cacheTime = 0;
