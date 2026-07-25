@@ -52,7 +52,9 @@ transferRouter.post("/issue", async (req, res) => {
   }
 
   const token = randomBytes(24).toString("hex");
-  const link = `https://web3-hackathon-8kad.vercel.app/claim?token=${token}`;
+  const baseUrl = process.env.APP_BASE_URL;
+  if (!baseUrl) throw new Error("APP_BASE_URL is not set");
+  const link = `${baseUrl}/claim?token=${token}`;
   pending.set(token, {
     credential,
     signature,
