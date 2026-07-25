@@ -1,57 +1,60 @@
-import { useState } from 'react'
-import { isAddress, BrowserProvider } from 'ethers'
-import { useWallet } from '../hooks/useWallet'
-import { useAccreditation } from '../hooks/useAccreditation'
+import { useState } from "react";
+import { isAddress, BrowserProvider } from "ethers";
+import { useWallet } from "../hooks/useWallet";
+import { useAccreditation } from "../hooks/useAccreditation";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function Gate({ message }) {
 	return (
-		<div className="card mt-6 text-center text-sm text-neutral-500">{message}</div>
-	)
+		<div className="card mt-6 text-center text-sm text-neutral-500">
+			{message}
+		</div>
+	);
 }
 
 export function IssueDegreePage() {
-	const wallet = useWallet()
-	const { isConnected, truncatedAddress } = wallet
-	const { isAccredited, loading, wrongNetwork, notConfigured } = useAccreditation(wallet)
+	const wallet = useWallet();
+	const { isConnected, truncatedAddress } = wallet;
+	const { isAccredited, loading, wrongNetwork, notConfigured } =
+		useAccreditation(wallet);
 
-	const [graduateAddress, setGraduateAddress] = useState('')
-	const [degreeName, setDegreeName] = useState('')
-	const [graduationDate, setGraduationDate] = useState('')
-	const [fieldOfStudy, setFieldOfStudy] = useState('')
-	const [email, setEmail] = useState('')
-	const [formError, setFormError] = useState(null)
-	const [success, setSuccess] = useState(false)
-	const [submitting, setSubmitting] = useState(false)
+	const [graduateAddress, setGraduateAddress] = useState("");
+	const [degreeName, setDegreeName] = useState("");
+	const [graduationDate, setGraduationDate] = useState("");
+	const [fieldOfStudy, setFieldOfStudy] = useState("");
+	const [email, setEmail] = useState("");
+	const [formError, setFormError] = useState(null);
+	const [success, setSuccess] = useState(false);
+	const [submitting, setSubmitting] = useState(false);
 
 	const handleSubmit = async (e) => {
-		e.preventDefault()
-		setFormError(null)
-		setSuccess(false)
+		e.preventDefault();
+		setFormError(null);
+		setSuccess(false);
 
 		if (!isAddress(graduateAddress)) {
-			setFormError('Invalid graduate wallet address')
-			return
+			setFormError("Invalid graduate wallet address");
+			return;
 		}
 		if (!degreeName.trim()) {
-			setFormError('Degree name is required')
-			return
+			setFormError("Degree name is required");
+			return;
 		}
 		if (!graduationDate) {
-			setFormError('Graduation date is required')
-			return
+			setFormError("Graduation date is required");
+			return;
 		}
 		if (!fieldOfStudy.trim()) {
-			setFormError('Field of study is required')
-			return
+			setFormError("Field of study is required");
+			return;
 		}
 		if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-			setFormError('Valid email address is required')
-			return
+			setFormError("Valid email address is required");
+			return;
 		}
 
-		setSubmitting(true)
+		setSubmitting(true);
 		try {
 			const credential = {
 				issuer: wallet.address,
@@ -60,40 +63,40 @@ export function IssueDegreePage() {
 				graduationDate,
 				fieldOfStudy: fieldOfStudy.trim(),
 				issuedAt: Math.floor(Date.now() / 1000),
-			}
+			};
 
-			const message = JSON.stringify(credential)
-			const provider = new BrowserProvider(window.ethereum)
-			const signer = await provider.getSigner()
-			const signature = await signer.signMessage(message)
+			const message = JSON.stringify(credential);
+			const provider = new BrowserProvider(window.ethereum);
+			const signer = await provider.getSigner();
+			const signature = await signer.signMessage(message);
 
 			const res = await fetch(`${API_URL}/issue`, {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ credential, signature, email: email.trim() }),
-			})
+			});
 
 			if (!res.ok) {
-				const data = await res.json().catch(() => null)
-				throw new Error(data?.error || `Server error: ${res.status}`)
+				const data = await res.json().catch(() => null);
+				throw new Error(data?.error || `Server error: ${res.status}`);
 			}
 
-			setSuccess(true)
-			setGraduateAddress('')
-			setDegreeName('')
-			setGraduationDate('')
-			setFieldOfStudy('')
-			setEmail('')
+			setSuccess(true);
+			setGraduateAddress("");
+			setDegreeName("");
+			setGraduationDate("");
+			setFieldOfStudy("");
+			setEmail("");
 		} catch (err) {
-			if (err.code === 'ACTION_REJECTED') {
-				setFormError('Signature request was rejected')
+			if (err.code === "ACTION_REJECTED") {
+				setFormError("Signature request was rejected");
 			} else {
-				setFormError(err.message || 'Failed to issue degree')
+				setFormError(err.message || "Failed to issue degree");
 			}
 		} finally {
-			setSubmitting(false)
+			setSubmitting(false);
 		}
-	}
+	};
 
 	const header = (
 		<div>
@@ -103,7 +106,7 @@ export function IssueDegreePage() {
 				{isConnected && ` Connected as: ${truncatedAddress}`}
 			</p>
 		</div>
-	)
+	);
 
 	if (!isConnected) {
 		return (
@@ -111,7 +114,7 @@ export function IssueDegreePage() {
 				{header}
 				<Gate message="Connect your wallet to access degree issuance." />
 			</section>
-		)
+		);
 	}
 
 	if (wrongNetwork || notConfigured) {
@@ -120,20 +123,26 @@ export function IssueDegreePage() {
 				{header}
 				<div className="card mt-6 text-center">
 					<p className="text-sm text-neutral-500">
-						{wrongNetwork ? 'Connect to the correct network to issue degrees.' : 'Registry not configured.'}
+						{wrongNetwork
+							? "Connect to the correct network to issue degrees."
+							: "Registry not configured."}
 					</p>
 					{wrongNetwork && (
 						<button
 							type="button"
 							className="btn-primary mt-4"
-							onClick={() => wallet.switchNetwork(Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337))}
+							onClick={() =>
+								wallet.switchNetwork(
+									Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337),
+								)
+							}
 						>
 							Switch Network
 						</button>
 					)}
 				</div>
 			</section>
-		)
+		);
 	}
 
 	if (loading) {
@@ -142,7 +151,7 @@ export function IssueDegreePage() {
 				{header}
 				<Gate message="Loading..." />
 			</section>
-		)
+		);
 	}
 
 	if (!isAccredited) {
@@ -151,7 +160,7 @@ export function IssueDegreePage() {
 				{header}
 				<Gate message="You must be an accredited university to issue degrees." />
 			</section>
-		)
+		);
 	}
 
 	return (
@@ -160,7 +169,9 @@ export function IssueDegreePage() {
 
 			<form onSubmit={handleSubmit} className="card mt-6 space-y-4">
 				<div>
-					<label htmlFor="graduateAddress" className="label">Graduate Wallet Address</label>
+					<label htmlFor="graduateAddress" className="label">
+						Graduate Wallet Address
+					</label>
 					<input
 						id="graduateAddress"
 						type="text"
@@ -173,7 +184,9 @@ export function IssueDegreePage() {
 				</div>
 
 				<div>
-					<label htmlFor="degreeName" className="label">Degree Name</label>
+					<label htmlFor="degreeName" className="label">
+						Degree Name
+					</label>
 					<input
 						id="degreeName"
 						type="text"
@@ -186,7 +199,9 @@ export function IssueDegreePage() {
 				</div>
 
 				<div>
-					<label htmlFor="graduationDate" className="label">Graduation Date</label>
+					<label htmlFor="graduationDate" className="label">
+						Graduation Date
+					</label>
 					<input
 						id="graduationDate"
 						type="date"
@@ -198,7 +213,9 @@ export function IssueDegreePage() {
 				</div>
 
 				<div>
-					<label htmlFor="fieldOfStudy" className="label">Field of Study</label>
+					<label htmlFor="fieldOfStudy" className="label">
+						Field of Study
+					</label>
 					<input
 						id="fieldOfStudy"
 						type="text"
@@ -211,7 +228,9 @@ export function IssueDegreePage() {
 				</div>
 
 				<div>
-					<label htmlFor="email" className="label">Graduate Email</label>
+					<label htmlFor="email" className="label">
+						Graduate Email
+					</label>
 					<input
 						id="email"
 						type="email"
@@ -235,10 +254,14 @@ export function IssueDegreePage() {
 					</p>
 				)}
 
-				<button type="submit" className="btn-primary w-full" disabled={submitting}>
-					{submitting ? 'Signing & Sending...' : 'Issue Degree'}
+				<button
+					type="submit"
+					className="btn-primary w-full"
+					disabled={submitting}
+				>
+					{submitting ? "Signing & Sending..." : "Issue Degree"}
 				</button>
 			</form>
 		</section>
-	)
+	);
 }

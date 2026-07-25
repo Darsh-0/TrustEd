@@ -7,7 +7,6 @@ import { getCredentialsByAddress } from "./lib/store";
 import { LandingPage } from "./pages/LandingPage";
 import { RegistryPage } from "./pages/RegistryPage";
 import { IssueDegreePage } from "./pages/IssueDegreePage";
-import PocPage from "./pages/POC.jsx";
 import ClaimPage from "./pages/ClaimPage.jsx";
 import VerifyPage from "./pages/VerifyPage";
 import SharePage from "./pages/SharePage.jsx";
@@ -17,7 +16,7 @@ function App() {
   const wallet = useWallet();
   const { isConnected, address } = wallet;
   const { isAccredited } = useAccreditation(wallet);
-  const [hasCredentials, setHasCredentials] = useState(false);
+  const [setHasCredentials] = useState(false);
 
   useEffect(() => {
     if (!isConnected || !address) return;
@@ -65,7 +64,6 @@ function App() {
           <Route path="/issue-degree" element={<IssueDegreePage />} />
           <Route path="/share" element={<SharePage />} />
           <Route path="/verify" element={<VerifyPage />} />
-          <Route path="/poc" element={<PocPage />} />
           <Route path="/claim" element={<ClaimPage />} />
         </Routes>
       </main>
