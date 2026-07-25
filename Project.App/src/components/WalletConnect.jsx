@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useWallet } from '../hooks/useWallet'
+import { useState } from "react";
+import { useWallet } from "../hooks/useWallet";
 
 function CopyIcon({ className }) {
 	return (
@@ -77,7 +77,14 @@ export function WalletConnect() {
 		error,
 		connect,
 		disconnect,
-	} = useWallet()
+	} = useWallet();
+	const [copied, setCopied] = useState(false);
+
+	function copyAddress() {
+		navigator.clipboard.writeText(address);
+		setCopied(true);
+		setTimeout(() => setCopied(false), 2000);
+	}
 
 	if (!hasWallet) {
 		return (
@@ -85,11 +92,11 @@ export function WalletConnect() {
 				href="https://metamask.io/download/"
 				target="_blank"
 				rel="noopener noreferrer"
-				className="btn-outline"
+				className="btn-outline cursor-pointer"
 			>
 				Install MetaMask
 			</a>
-		)
+		);
 	}
 
 	return (

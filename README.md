@@ -47,6 +47,43 @@ The DAO is the only source of truth for accreditation. The API and the app **rea
 never write to it — there is no ministry, voting, or application UI in them. Everything that
 *produces* an accreditation lives in the DAO contracts.
 
+## Project Structure
+
+```
+TrustEd/
+├── common.sh                  # Shared shell helpers for local scripts
+├── start-all.sh               # Starts the full stack
+├── seed-demo.sh               # Seeds the demo registry through the DAO flow
+├── Project.Api/               # Express + ethers API for registry reads and credential routes
+│   ├── src/
+│   │   ├── index.ts           # API entry point and server bootstrap
+│   │   ├── dao.ts             # DAO and registry access helpers
+│   │   └── routes/
+│   │       ├── auth.ts        # Authentication and wallet/session routes
+│   │       └── transfer.ts    # Credential issue and claim routes
+│   ├── artifacts/             # Solidity build artifacts consumed by the API
+│   │   ├── build-info/        # Solc build metadata
+│   │   └── contracts/         # Per-contract JSON artifacts
+│   └── package.json           # API package manifest and scripts
+├── Project.App/               # React + Vite credential directory and claim experience
+│   ├── src/
+│   │   ├── App.jsx            # Application shell and routing
+│   │   ├── main.jsx           # Front-end bootstrap
+│   │   ├── components/        # Shared UI pieces
+│   │   ├── context/           # Wallet context and provider wiring
+│   │   ├── hooks/             # Reusable React hooks
+│   │   ├── lib/               # Client-side utilities and storage helpers
+│   │   └── pages/             # Route-level screens
+│   ├── public/                # Static assets served by Vite
+│   └── package.json           # App package manifest and scripts
+├── university-dao/            # Foundry workspace for governance and registry contracts
+│   ├── src/                   # Solidity contracts for accreditation and registry logic
+│   ├── script/                # Deployment and demo scripts
+│   ├── deployments/           # Recorded deployment addresses and chain state
+│   ├── lib/                   # Vendored Foundry dependencies
+│   └── foundry.toml           # Foundry configuration
+```
+
 ## Running it
 
 Needs [Foundry](https://getfoundry.sh) and [Node.js](https://nodejs.org).
@@ -118,43 +155,6 @@ notifications require `FROM_EMAIL` and `RESEND_API_KEY`).
 The directory loads without a wallet. To issue a degree you need to connect as an accredited
 university: point MetaMask at `http://127.0.0.1:8545` (chain 31337) and import one of the
 university accounts `seed-demo.sh` prints when it finishes.
-
-## Project Structure
-
-```
-TrustEd/
-├── common.sh                  # Shared shell helpers for local scripts
-├── start-all.sh               # Starts the full stack
-├── seed-demo.sh               # Seeds the demo registry through the DAO flow
-├── Project.Api/               # Express + ethers API for registry reads and credential routes
-│   ├── src/
-│   │   ├── index.ts           # API entry point and server bootstrap
-│   │   ├── dao.ts             # DAO and registry access helpers
-│   │   └── routes/
-│   │       ├── auth.ts        # Authentication and wallet/session routes
-│   │       └── transfer.ts    # Credential issue and claim routes
-│   ├── artifacts/             # Solidity build artifacts consumed by the API
-│   │   ├── build-info/        # Solc build metadata
-│   │   └── contracts/         # Per-contract JSON artifacts
-│   └── package.json           # API package manifest and scripts
-├── Project.App/               # React + Vite credential directory and claim experience
-│   ├── src/
-│   │   ├── App.jsx            # Application shell and routing
-│   │   ├── main.jsx           # Front-end bootstrap
-│   │   ├── components/        # Shared UI pieces
-│   │   ├── context/           # Wallet context and provider wiring
-│   │   ├── hooks/             # Reusable React hooks
-│   │   ├── lib/               # Client-side utilities and storage helpers
-│   │   └── pages/             # Route-level screens
-│   ├── public/                # Static assets served by Vite
-│   └── package.json           # App package manifest and scripts
-├── university-dao/            # Foundry workspace for governance and registry contracts
-│   ├── src/                   # Solidity contracts for accreditation and registry logic
-│   ├── script/                # Deployment and demo scripts
-│   ├── deployments/           # Recorded deployment addresses and chain state
-│   ├── lib/                   # Vendored Foundry dependencies
-│   └── foundry.toml           # Foundry configuration
-```
 
 ## Authors and Acknowledgments
 
