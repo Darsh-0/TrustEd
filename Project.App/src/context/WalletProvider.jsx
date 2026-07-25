@@ -133,6 +133,26 @@ export function WalletProvider({ children }) {
         const network = await provider.getNetwork()
         setAddress(accounts[0])
         setChainId(Number(network.chainId))
+        if (Number(network.chainId) !== EXPECTED_CHAIN_ID) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}` }],
+            })
+          } catch (switchErr) {
+            if (switchErr.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [{
+                  chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}`,
+                  chainName: 'Local',
+                  rpcUrls: ['http://127.0.0.1:8545'],
+                  nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+                }],
+              })
+            }
+          }
+        }
       })
       .catch(() => {})
 
@@ -146,7 +166,30 @@ export function WalletProvider({ children }) {
       }
     }
 
-    const handleChainChanged = () => window.location.reload()
+    const handleChainChanged = async (newChainIdHex) => {
+      const newChainId = Number(newChainIdHex)
+      setChainId(newChainId)
+      if (newChainId !== EXPECTED_CHAIN_ID) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}` }],
+          })
+        } catch (switchErr) {
+          if (switchErr.code === 4902) {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}`,
+                chainName: 'Local',
+                rpcUrls: ['http://127.0.0.1:8545'],
+                nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+              }],
+            })
+          }
+        }
+      }
+    }
 
     window.ethereum.on('accountsChanged', handleAccountsChanged)
     window.ethereum.on('chainChanged', handleChainChanged)
