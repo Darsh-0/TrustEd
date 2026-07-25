@@ -22,10 +22,12 @@ function App() {
   useEffect(() => {
     if (!isConnected || !address) return;
     let cancelled = false;
-    getCredentialsByAddress(address).then(creds => {
+    getCredentialsByAddress(address).then((creds) => {
       if (!cancelled) setHasCredentials(creds.length > 0);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [isConnected, address]);
 
   return (
@@ -40,7 +42,7 @@ function App() {
             <Link to="/registry" className="hover:text-[#17463C]">
               Educators
             </Link>
-            {isConnected && hasCredentials && (
+            {isConnected && (
               <Link to="/share" className="hover:text-[#17463C]">
                 Share
               </Link>
