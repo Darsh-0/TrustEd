@@ -1,0 +1,49 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-575ad93e56bf43b9082cca8e7022d4a2cd8e5608",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "compilerType": "solc",
+  "toolVersions": {
+    "hardhat": "3.11.1"
+  },
+  "userSourceNameMap": {
+    "contracts/IssuerRegistry.sol": "project/contracts/IssuerRegistry.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode.linkReferences",
+            "evm.bytecode.object",
+            "evm.bytecode.opcodes",
+            "evm.bytecode.sourceMap",
+            "evm.deployedBytecode.immutableReferences",
+            "evm.deployedBytecode.linkReferences",
+            "evm.deployedBytecode.object",
+            "evm.deployedBytecode.opcodes",
+            "evm.deployedBytecode.sourceMap",
+            "evm.methodIdentifiers"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/IssuerRegistry.sol": {
+        "content": "// SPDX-License-Identifier: UNLICENSED\r\npragma solidity ^0.8.28;\r\n\r\ncontract IssuerRegistry {\r\n  address public owner;\r\n\r\n  struct Educator {\r\n    address wallet;\r\n    uint256 joinDate;\r\n    string name;\r\n  }\r\n\r\n  mapping(address => Educator) private educators;\r\n  address[] private educatorAddresses;\r\n\r\n  event EducatorAdded(address indexed wallet, string name);\r\n  event EducatorRemoved(address indexed wallet);\r\n  event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);\r\n\r\n  modifier onlyOwner() {\r\n    require(msg.sender == owner, \"IssuerRegistry: caller is not the owner\");\r\n    _;\r\n  }\r\n\r\n  constructor() {\r\n    owner = msg.sender;\r\n    emit OwnershipTransferred(address(0), msg.sender);\r\n  }\r\n\r\n  function transferOwnership(address newOwner) public onlyOwner {\r\n    require(newOwner != address(0), \"IssuerRegistry: new owner is the zero address\");\r\n    emit OwnershipTransferred(owner, newOwner);\r\n    owner = newOwner;\r\n  }\r\n\r\n  function addEducator(address wallet, string memory name) public onlyOwner {\r\n    require(wallet != address(0), \"IssuerRegistry: zero address\");\r\n    require(educators[wallet].wallet == address(0), \"IssuerRegistry: already registered\");\r\n\r\n    educators[wallet] = Educator(wallet, block.timestamp, name);\r\n    educatorAddresses.push(wallet);\r\n\r\n    emit EducatorAdded(wallet, name);\r\n  }\r\n\r\n  function removeEducator(address wallet) public onlyOwner {\r\n    require(educators[wallet].wallet != address(0), \"IssuerRegistry: not registered\");\r\n\r\n    delete educators[wallet];\r\n\r\n    for (uint256 i = 0; i < educatorAddresses.length; i++) {\r\n      if (educatorAddresses[i] == wallet) {\r\n        educatorAddresses[i] = educatorAddresses[educatorAddresses.length - 1];\r\n        educatorAddresses.pop();\r\n        break;\r\n      }\r\n    }\r\n\r\n    emit EducatorRemoved(wallet);\r\n  }\r\n\r\n  function getEducator(address wallet) public view returns (address, uint256, string memory) {\r\n    Educator memory e = educators[wallet];\r\n    return (e.wallet, e.joinDate, e.name);\r\n  }\r\n\r\n  function isEducator(address wallet) public view returns (bool) {\r\n    return educators[wallet].wallet != address(0);\r\n  }\r\n\r\n  function getAllEducators() public view returns (address[] memory) {\r\n    return educatorAddresses;\r\n  }\r\n\r\n  function educatorCount() public view returns (uint256) {\r\n    return educatorAddresses.length;\r\n  }\r\n}\r\n"
+      }
+    }
+  }
+}
