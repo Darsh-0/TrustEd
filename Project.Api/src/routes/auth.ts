@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { ethers } from 'ethers'
 import { randomBytes } from 'crypto'
-import { isAccredited } from '../dao.js'
+import { getUniversity } from '../dao.js'
 
 
 const nonces = new Map()
@@ -89,9 +89,11 @@ function buildMessage(address: string, nonce: string): string {
 interface Credential {
 	id: string
 	issuer: string
-	subject: string
-	claim: string
-	issuedAt: string
+	graduate: string
+	degreeName: string
+	fieldOfStudy: string
+	graduationDate: string
+	issuedAt: number
 }
 
 interface Presentation {
@@ -126,28 +128,47 @@ authRouter.post('/present', (req, res) => {
 // 3) Employer opens the link → redeem + run the five checks
 authRouter.get('/redeem/:token', async (req, res) => {
 	const entry = presentations.get(req.params.token)
+
 	if (!entry || Date.now() > entry.expires) {
 		return res.status(404).json({ error: 'link invalid or expired' })
 	}
+
+	if (entry.result) {
+		return res.json(entry.result)
+	}
+
 	const result = await verifyPresentation(entry.presentation)
-	presentations.delete(req.params.token)          // single-use token
-	nonces.delete(entry.presentation.nonce)          // single-use nonce
+
+	entry.result = result                   // cache the verdict
+	entry.expires = Date.now() + 60_000     // 60s grace window for repeat reads
+
+	// Burn the nonce on successful use — replay protection.
+	if (result.ok) {
+		nonces.delete(entry.presentation.nonce)
+	}
+
+
 	res.json(result)
 })
 
 async function verifyPresentation(p: Presentation) {
+	// 0. validate presentation structure
+	if (!p?.credential || !p.credential.graduate || !p.credential.issuer) {
+		return { ok: false, reason: 'invalid presentation structure' }
+	}
+
 	// 1. nonce we issued, still valid
 	const nonceExpires = nonces.get(p.nonce)
 	if (!nonceExpires || Date.now() > nonceExpires) {
 		return { ok: false, reason: 'nonce invalid or expired' }
 	}
 
-	// 2. sharer controls the subject wallet
+	// 2. sharer controls the graduate wallet
 	const holderMsg = `Verify credential ${p.credential.id} with nonce ${p.nonce}`
 	let holder: string
 	try { holder = ethers.verifyMessage(holderMsg, p.holderSignature).toLowerCase() }
 	catch { return { ok: false, reason: 'malformed holder signature' } }
-	if (holder !== p.credential.subject.toLowerCase()) {
+	if (holder !== p.credential.graduate.toLowerCase()) {
 		return { ok: false, reason: 'sharer does not control this credential' }
 	}
 
@@ -160,9 +181,41 @@ async function verifyPresentation(p: Presentation) {
 		return { ok: false, reason: 'credential signature does not match issuer' }
 	}
 
-	// 4. issuer is DAO-accredited
-	const recognised = await isAccredited(issuer)
-	if (!recognised) return { ok: false, reason: 'issuer is not an accredited university' }
+	// 4. issuer is DAO-accredited — fetch the full record for name/country/status
+	let university
+	try {
+		university = await getUniversity(issuer)
+	} catch {
+		return { ok: false, reason: 'issuer is not registered with the DAO' }
+	}
 
-	return { ok: true, degree: p.credential.claim, issuer, holder, issuedAt: p.credential.issuedAt }
+	if (!university.accredited) {
+		return {
+			ok: false,
+			reason: university.status === 'Revoked'
+				? `accreditation of ${university.name} has been revoked`
+				: `issuer is not accredited (status: ${university.status})`,
+			university: { name: university.name, country: university.country, status: university.status },
+		}
+	}
+
+	// all checks passed
+	return {
+		ok: true,
+		degree: {
+			name: p.credential.degreeName,
+			fieldOfStudy: p.credential.fieldOfStudy,
+			graduationDate: p.credential.graduationDate,
+			issuedAt: new Date(Number(p.credential.issuedAt) * 1000).toISOString(),
+		},
+		university: {
+			name: university.name,
+			country: university.country,
+			address: university.address,
+			accreditedSince: university.lastUpdated,
+		},
+		graduate: {
+			address: holder,
+		},
+	}
 }

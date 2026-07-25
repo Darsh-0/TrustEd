@@ -1,26 +1,37 @@
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
+import studentNormal from "../assets/normal.png";
 
 export function LandingPage() {
   return (
-    <section className="flex min-h-[70vh] flex-col items-center justify-center text-center">
-      <p className="mb-4 text-xs font-medium uppercase tracking-widest text-lime-400">
-        On-chain · Credentials · Trust
-      </p>
-      <h1 className="max-w-2xl text-5xl font-bold tracking-tight text-white sm:text-6xl">
-        Issue and verify academic degrees
-      </h1>
-      <p className="mt-6 max-w-xl text-lg text-zinc-400">
-        A trusted on-chain registry of accredited educators. Verified
-        institutions issue degrees to graduates — anyone can verify.
-      </p>
-      <div className="mt-10 flex items-center gap-4">
-        <Link to="/issue-degree" className="btn-primary">
-          Issue Degree
-        </Link>
-        <Link to="/verify" className="btn-outline">
-          Verify Degree
-        </Link>
-      </div>
-    </section>
-  )
+    <div className="max-h-screen bg-white text-neutral-900">
+      <section className="flex flex-col items-center px-6 pb-24 pt-12 text-center sm:pt-16">
+        <h1 className="max-w-3xl text-5xl font-bold leading-[1.05] tracking-tight text-neutral-900 sm:text-7xl">
+          Immutable academic credentials.
+        </h1>
+
+        <div className="relative mt-14 h-64 w-64 sm:h-80 sm:w-80">
+          <img
+            src={studentNormal}
+            alt="Graduate"
+            className="absolute inset-0 h-full w-full object-contain"
+          />
+        </div>
+
+        <div className="mt-14 flex items-center gap-4">
+          <Link
+            to="/issue-degree"
+            className="rounded-lg bg-[#17463C] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#0f332b]"
+          >
+            Issue Degree
+          </Link>
+          <Link
+            to="/share"
+            className="rounded-lg border border-[#17463C] px-6 py-3 text-sm font-semibold text-[#17463C] transition-colors hover:bg-[#17463C]/5"
+          >
+            Share
+          </Link>
+        </div>
+      </section>
+    </div>
+  );
 }
