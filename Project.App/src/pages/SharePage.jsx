@@ -42,10 +42,10 @@ export default function SharePage() {
 
 	if (!isConnected) {
 		return (
-			<section className="mx-auto max-w-lg">
+			<section className="mx-auto max-w-lg px-6 py-12">
 				<div className="card mt-6 text-center">
-					<h2 className="text-lg font-semibold text-white">Share Your Credential</h2>
-					<p className="mt-2 text-sm text-zinc-400">
+					<h2 className="text-lg font-semibold text-neutral-900">Share Your Credential</h2>
+					<p className="mt-2 text-sm text-neutral-500">
 						Connect your wallet to view and share your credentials.
 					</p>
 				</div>
@@ -54,23 +54,23 @@ export default function SharePage() {
 	}
 
 	return (
-		<section className="mx-auto max-w-2xl">
-			<div className="mt-6">
-				<h1 className="text-2xl font-bold text-white">Your Credentials</h1>
-				<p className="mt-1 text-sm text-zinc-400">
+		<section className="mx-auto max-w-2xl px-6 py-12">
+			<div>
+				<h1 className="text-2xl font-bold text-neutral-900">Your Credentials</h1>
+				<p className="mt-1 text-sm text-neutral-500">
 					Generate a shareable verification link for employers.
 				</p>
 			</div>
 
 			{loading && (
 				<div className="card mt-6 text-center">
-					<div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-lime-400 border-t-transparent" />
+					<div className="mx-auto h-6 w-6 animate-spin rounded-full border-2 border-[#17463C] border-t-transparent" />
 				</div>
 			)}
 
 			{!loading && creds.length === 0 && (
 				<div className="card mt-6 text-center">
-					<p className="text-sm text-zinc-400">No credentials found for this wallet.</p>
+					<p className="text-sm text-neutral-500">No credentials found for this wallet.</p>
 				</div>
 			)}
 
@@ -82,20 +82,20 @@ export default function SharePage() {
 					<div key={id} className="card mt-4">
 						<dl className="space-y-2 text-sm">
 							<div>
-								<dt className="text-zinc-500">Degree</dt>
-								<dd className="font-medium text-white">{cred.degreeName}</dd>
+								<dt className="text-neutral-500">Degree</dt>
+								<dd className="font-medium text-neutral-900">{cred.degreeName}</dd>
 							</div>
 							<div>
-								<dt className="text-zinc-500">Field of Study</dt>
-								<dd className="text-zinc-200">{cred.fieldOfStudy}</dd>
+								<dt className="text-neutral-500">Field of Study</dt>
+								<dd className="text-neutral-700">{cred.fieldOfStudy}</dd>
 							</div>
 							<div>
-								<dt className="text-zinc-500">Graduation Date</dt>
-								<dd className="text-zinc-200">{cred.graduationDate}</dd>
+								<dt className="text-neutral-500">Graduation Date</dt>
+								<dd className="text-neutral-700">{cred.graduationDate}</dd>
 							</div>
 							<div>
-								<dt className="text-zinc-500">Issuer</dt>
-								<dd className="font-mono text-xs text-zinc-300">
+								<dt className="text-neutral-500">Issuer</dt>
+								<dd className="font-mono text-xs text-neutral-600">
 									{cred.issuer?.slice(0, 6)}...{cred.issuer?.slice(-4)}
 								</dd>
 							</div>
@@ -110,7 +110,7 @@ export default function SharePage() {
 
 						{state.link && (
 							<div className="mt-4">
-								<p className="mb-2 text-xs font-medium text-zinc-400">Share this link:</p>
+								<p className="mb-2 text-xs font-medium text-neutral-500">Share this link:</p>
 								<div className="flex gap-2">
 									<input
 										readOnly
@@ -126,7 +126,7 @@ export default function SharePage() {
 						)}
 
 						{state.error && (
-							<p className="mt-3 text-sm text-red-400">{state.error}</p>
+							<p className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">{state.error}</p>
 						)}
 					</div>
 				)
