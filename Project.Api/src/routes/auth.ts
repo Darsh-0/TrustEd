@@ -151,6 +151,11 @@ authRouter.get('/redeem/:token', async (req, res) => {
 })
 
 async function verifyPresentation(p: Presentation) {
+	// 0. validate presentation structure
+	if (!p?.credential || !p.credential.graduate || !p.credential.issuer) {
+		return { ok: false, reason: 'invalid presentation structure' }
+	}
+
 	// 1. nonce we issued, still valid
 	const nonceExpires = nonces.get(p.nonce)
 	if (!nonceExpires || Date.now() > nonceExpires) {
@@ -162,7 +167,7 @@ async function verifyPresentation(p: Presentation) {
 	let holder: string
 	try { holder = ethers.verifyMessage(holderMsg, p.holderSignature).toLowerCase() }
 	catch { return { ok: false, reason: 'malformed holder signature' } }
-	if (holder !== p.credential.graduate?.toLowerCase()) {
+	if (holder !== p.credential.graduate.toLowerCase()) {
 		return { ok: false, reason: 'sharer does not control this credential' }
 	}
 
@@ -171,7 +176,7 @@ async function verifyPresentation(p: Presentation) {
 	let issuer: string
 	try { issuer = ethers.verifyMessage(credMsg, p.credentialSignature).toLowerCase() }
 	catch { return { ok: false, reason: 'malformed credential signature' } }
-	if (issuer !== p.credential.issuer?.toLowerCase()) {
+	if (issuer !== p.credential.issuer.toLowerCase()) {
 		return { ok: false, reason: 'credential signature does not match issuer' }
 	}
 
