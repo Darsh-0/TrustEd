@@ -34,7 +34,7 @@ export function WalletConnect() {
 						onClick={() => navigator.clipboard.writeText(address)} title="copy wallet address">
 						{truncatedAddress}
 					</span>
-					<button className="btn-outline" onClick={disconnect}>
+					<button className="btn-outline cursor-pointer" onClick={disconnect}>
 						Disconnect
 					</button>
 				</>
