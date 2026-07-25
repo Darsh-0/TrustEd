@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
+import {Hashes} from "../utils/cryptography/Hashes.sol";
 import {MerkleTree} from "../utils/structs/MerkleTree.sol";
 
 contract MerkleTreeMock {
@@ -14,6 +15,7 @@ contract MerkleTreeMock {
     bytes32 public root;
 
     event LeafInserted(bytes32 leaf, uint256 index, bytes32 root);
+    event LeafUpdated(bytes32 oldLeaf, bytes32 newLeaf, uint256 index, bytes32 root);
 
     function setup(uint8 _depth, bytes32 _zero) public {
         root = _tree.setup(_depth, _zero);
@@ -23,6 +25,13 @@ contract MerkleTreeMock {
         (uint256 leafIndex, bytes32 currentRoot) = _tree.push(leaf);
         emit LeafInserted(leaf, leafIndex, currentRoot);
         root = currentRoot;
+    }
+
+    function update(uint256 index, bytes32 oldValue, bytes32 newValue, bytes32[] memory proof) public {
+        (bytes32 oldRoot, bytes32 newRoot) = _tree.update(index, oldValue, newValue, proof);
+        if (oldRoot != root) revert MerkleTree.MerkleTreeUpdateInvalidProof();
+        emit LeafUpdated(oldValue, newValue, index, newRoot);
+        root = newRoot;
     }
 
     function depth() public view returns (uint256) {
@@ -40,5 +49,20 @@ contract MerkleTreeMock {
 
     function zeros(uint256 i) public view returns (bytes32) {
         return _tree._zeros[i];
+    }
+
+    // Non-commutative hashing variants using Hashes.efficientKeccak256.
+    // efficientKeccak256(a, b) = keccak256(abi.encode(a, b)) without sorting,
+    // so H(a,b) != H(b,a). This allows testing that MerkleTree correctly
+    // preserves insertion order when a non-commutative hash function is used.
+
+    function setupNonCommutative(uint8 _depth, bytes32 _zero) public {
+        root = _tree.setup(_depth, _zero, Hashes.efficientKeccak256);
+    }
+
+    function pushNonCommutative(bytes32 leaf) public {
+        (uint256 leafIndex, bytes32 currentRoot) = _tree.push(leaf, Hashes.efficientKeccak256);
+        emit LeafInserted(leaf, leafIndex, currentRoot);
+        root = currentRoot;
     }
 }

@@ -6,7 +6,7 @@ const { GovernorHelper } = require('../../helpers/governance');
 const { VoteType } = require('../../helpers/enums');
 
 const TOKENS = [
-  { Token: '$ERC721Votes', mode: 'blocknumber' },
+  { Token: '$ERC721Votes', mode: 'blockNumber' },
   { Token: '$ERC721VotesTimestampMock', mode: 'timestamp' },
 ];
 
@@ -29,7 +29,7 @@ describe('GovernorERC721', function () {
       const [owner, voter1, voter2, voter3, voter4] = await ethers.getSigners();
       const receiver = await ethers.deployContract('CallReceiverMock');
 
-      const token = await ethers.deployContract(Token, [tokenName, tokenSymbol, version]);
+      const token = await ethers.deployContract(Token, [tokenName, tokenSymbol, tokenName, version]);
       const mock = await ethers.deployContract('$GovernorMock', [
         name, // name
         votingDelay, // initialVotingDelay

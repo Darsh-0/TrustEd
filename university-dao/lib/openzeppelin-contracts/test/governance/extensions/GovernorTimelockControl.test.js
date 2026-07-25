@@ -9,7 +9,7 @@ const { OperationState, ProposalState, VoteType } = require('../../helpers/enums
 const time = require('../../helpers/time');
 
 const TOKENS = [
-  { Token: '$ERC20Votes', mode: 'blocknumber' },
+  { Token: '$ERC20Votes', mode: 'blockNumber' },
   { Token: '$ERC20VotesTimestampMock', mode: 'timestamp' },
 ];
 
@@ -34,7 +34,7 @@ describe('GovernorTimelockControl', function () {
       const [deployer, owner, voter1, voter2, voter3, voter4, other] = await ethers.getSigners();
       const receiver = await ethers.deployContract('CallReceiverMock');
 
-      const token = await ethers.deployContract(Token, [tokenName, tokenSymbol, version]);
+      const token = await ethers.deployContract(Token, [tokenName, tokenSymbol, tokenName, version]);
       const timelock = await ethers.deployContract('TimelockController', [delay, [], [], deployer]);
       const mock = await ethers.deployContract('$GovernorTimelockControlMock', [
         name,
@@ -166,11 +166,13 @@ describe('GovernorTimelockControl', function () {
             await this.helper.connect(this.voter1).vote({ support: VoteType.For });
             await this.helper.waitForDeadline(1n);
 
-            expect(await this.mock.state(this.proposal.id)).to.equal(ProposalState.Succeeded);
-
             await expect(this.helper.execute())
-              .to.be.revertedWithCustomError(this.timelock, 'TimelockUnexpectedOperationState')
-              .withArgs(this.proposal.timelockid, GovernorHelper.proposalStatesToBitMap(OperationState.Ready));
+              .to.be.revertedWithCustomError(this.mock, 'GovernorUnexpectedProposalState')
+              .withArgs(
+                this.proposal.id,
+                ProposalState.Succeeded,
+                GovernorHelper.proposalStatesToBitMap([ProposalState.Queued]),
+              );
           });
 
           it('if too early', async function () {
@@ -201,7 +203,7 @@ describe('GovernorTimelockControl', function () {
               .withArgs(
                 this.proposal.id,
                 ProposalState.Executed,
-                GovernorHelper.proposalStatesToBitMap([ProposalState.Succeeded, ProposalState.Queued]),
+                GovernorHelper.proposalStatesToBitMap([ProposalState.Queued]),
               );
           });
 
@@ -224,7 +226,7 @@ describe('GovernorTimelockControl', function () {
               .withArgs(
                 this.proposal.id,
                 ProposalState.Executed,
-                GovernorHelper.proposalStatesToBitMap([ProposalState.Succeeded, ProposalState.Queued]),
+                GovernorHelper.proposalStatesToBitMap([ProposalState.Queued]),
               );
           });
         });
@@ -270,7 +272,7 @@ describe('GovernorTimelockControl', function () {
             .withArgs(
               this.proposal.id,
               ProposalState.Canceled,
-              GovernorHelper.proposalStatesToBitMap([ProposalState.Succeeded, ProposalState.Queued]),
+              GovernorHelper.proposalStatesToBitMap([ProposalState.Queued]),
             );
         });
 

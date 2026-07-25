@@ -8,7 +8,7 @@ const { zip } = require('../../helpers/iterate');
 const { sum } = require('../../helpers/math');
 
 const TOKENS = [
-  { Token: '$ERC20Votes', mode: 'blocknumber' },
+  { Token: '$ERC20Votes', mode: 'blockNumber' },
   { Token: '$ERC20VotesTimestampMock', mode: 'timestamp' },
 ];
 
@@ -27,7 +27,7 @@ describe('GovernorCountingFractional', function () {
       const [owner, proposer, voter1, voter2, voter3, voter4, other] = await ethers.getSigners();
       const receiver = await ethers.deployContract('CallReceiverMock');
 
-      const token = await ethers.deployContract(Token, [tokenName, tokenSymbol, version]);
+      const token = await ethers.deployContract(Token, [tokenName, tokenSymbol, tokenName, version]);
       const mock = await ethers.deployContract('$GovernorFractionalMock', [
         name, // name
         votingDelay, // initialVotingDelay

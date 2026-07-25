@@ -15,6 +15,8 @@ async function fixture() {
   const erc20ReturnTrueMock = await ethers.deployContract('$ERC20', [name, symbol]); // default implementation returns true
   const erc20NoReturnMock = await ethers.deployContract('$ERC20NoReturnMock', [name, symbol]);
   const erc20ForceApproveMock = await ethers.deployContract('$ERC20ForceApproveMock', [name, symbol]);
+  const erc20DecimalsMock = await ethers.deployContract('$ERC20DecimalsMock', [name, symbol, 6]);
+  const erc20ExcessDecimalsMock = await ethers.deployContract('$ERC20ExcessDecimalsMock');
   const erc1363Mock = await ethers.deployContract('$ERC1363', [name, symbol]);
   const erc1363ReturnFalseOnErc20Mock = await ethers.deployContract('$ERC1363ReturnFalseOnERC20Mock', [name, symbol]);
   const erc1363ReturnFalseMock = await ethers.deployContract('$ERC1363ReturnFalseMock', [name, symbol]);
@@ -34,6 +36,8 @@ async function fixture() {
     erc20ReturnTrueMock,
     erc20NoReturnMock,
     erc20ForceApproveMock,
+    erc20DecimalsMock,
+    erc20ExcessDecimalsMock,
     erc1363Mock,
     erc1363ReturnFalseOnErc20Mock,
     erc1363ReturnFalseMock,
@@ -60,10 +64,22 @@ describe('SafeERC20', function () {
         .withArgs(this.token);
     });
 
+    it('returns false on trySafeTransfer', async function () {
+      await expect(this.mock.$trySafeTransfer(this.token, this.receiver, 0n))
+        .to.emit(this.mock, 'return$trySafeTransfer')
+        .withArgs(false);
+    });
+
     it('reverts on transferFrom', async function () {
       await expect(this.mock.$safeTransferFrom(this.token, this.mock, this.receiver, 0n))
         .to.be.revertedWithCustomError(this.mock, 'SafeERC20FailedOperation')
         .withArgs(this.token);
+    });
+
+    it('returns false on trySafeTransferFrom', async function () {
+      await expect(this.mock.$trySafeTransferFrom(this.token, this.mock, this.receiver, 0n))
+        .to.emit(this.mock, 'return$trySafeTransferFrom')
+        .withArgs(false);
     });
 
     it('reverts on increaseAllowance', async function () {
@@ -94,10 +110,22 @@ describe('SafeERC20', function () {
         .withArgs(this.token);
     });
 
+    it('returns false on trySafeTransfer', async function () {
+      await expect(this.mock.$trySafeTransfer(this.token, this.receiver, 0n))
+        .to.emit(this.mock, 'return$trySafeTransfer')
+        .withArgs(false);
+    });
+
     it('reverts on transferFrom', async function () {
       await expect(this.mock.$safeTransferFrom(this.token, this.mock, this.receiver, 0n))
         .to.be.revertedWithCustomError(this.mock, 'SafeERC20FailedOperation')
         .withArgs(this.token);
+    });
+
+    it('returns false on trySafeTransferFrom', async function () {
+      await expect(this.mock.$trySafeTransferFrom(this.token, this.mock, this.receiver, 0n))
+        .to.emit(this.mock, 'return$trySafeTransferFrom')
+        .withArgs(false);
     });
 
     it('reverts on increaseAllowance', async function () {
@@ -308,6 +336,32 @@ describe('SafeERC20', function () {
     });
   });
 
+  describe('tryGetDecimals', function () {
+    it('returns decimals when token has standard 18 decimals', async function () {
+      const result = await this.mock.$tryGetDecimals(this.erc20ReturnTrueMock);
+      expect(result.success).to.be.true;
+      expect(result.decimals).to.equal(18n);
+    });
+
+    it('returns decimals when token has non-standard decimals', async function () {
+      const result = await this.mock.$tryGetDecimals(this.erc20DecimalsMock);
+      expect(result.success).to.be.true;
+      expect(result.decimals).to.equal(6n);
+    });
+
+    it('returns false when address has no code', async function () {
+      const result = await this.mock.$tryGetDecimals(this.hasNoCode);
+      expect(result.success).to.be.false;
+      expect(result.decimals).to.equal(0n);
+    });
+
+    it('returns false when token returns a value that does not fit in uint8', async function () {
+      const result = await this.mock.$tryGetDecimals(this.erc20ExcessDecimalsMock);
+      expect(result.success).to.be.false;
+      expect(result.decimals).to.equal(0n);
+    });
+  });
+
   describe('with ERC1363 with usdt approval behaviour', function () {
     beforeEach(async function () {
       this.token = this.erc1363ForceApproveMock;
@@ -357,10 +411,22 @@ function shouldOnlyRevertOnErrors() {
         .withArgs(this.mock, this.receiver, 10n);
     });
 
+    it('returns true on trySafeTransfer', async function () {
+      await expect(this.mock.$trySafeTransfer(this.token, this.receiver, 10n))
+        .to.emit(this.mock, 'return$trySafeTransfer')
+        .withArgs(true);
+    });
+
     it("doesn't revert on transferFrom", async function () {
       await expect(this.mock.$safeTransferFrom(this.token, this.owner, this.receiver, 10n))
         .to.emit(this.token, 'Transfer')
         .withArgs(this.owner, this.receiver, 10n);
+    });
+
+    it('returns true on trySafeTransferFrom', async function () {
+      await expect(this.mock.$trySafeTransferFrom(this.token, this.owner, this.receiver, 10n))
+        .to.emit(this.mock, 'return$trySafeTransferFrom')
+        .withArgs(true);
     });
   });
 
