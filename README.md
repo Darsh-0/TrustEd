@@ -10,6 +10,7 @@
 ![ESLint](https://img.shields.io/badge/ESLint-10.6-4B32C3?logo=eslint&logoColor=white)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8-363636?logo=solidity&logoColor=white)
 ![Foundry](https://img.shields.io/badge/Foundry-Forge-B92122?logo=ethereum&logoColor=white)
+[![Remix](https://img.shields.io/badge/Remix-1C1C1C?logo=ethereum&logoColor=white)](https://remix.ethereum.org/)
 
 # TrustEd: A decentralized, DAO-verified credential registry that proves your degree is real without exposing your data.
 
@@ -21,17 +22,17 @@ A decentralized, privacy-preserving credential verification platform; built for 
 
 ### What problem does it solve:
 
+What problem does it solve:
 Verifying a degree today means phone calls, emails, and trusting paperwork that can be forged. Fake credentials aren't just an HR problem, they put patients under unqualified doctors and sensitive systems in the hands of unverified staff. Our project fixes this by removing the need for a single trusted authority to vouch for anything.
 
 ### How it works:
+A DAO of accrediting bodies (e.g. ministries of education across different countries) votes to approve legitimate universities, creating a public, tamper-proof on-chain registry of trusted issuers. Approved universities create degree credentials and sign them with their private key, entirely off-chain, then send them directly to the graduate's wallet. No degree data ever touches the blockchain. When an employer needs proof of qualification, the graduate shares their signed credential and signs it themselves to prove ownership. The employer verifies it in seconds: checking the university's signature against its known public key, and confirming that key belongs to a DAO-approved issuer on-chain. No calls, no paperwork, and no personal data is ever exposed on a public ledger. 
 
-A DAO of accrediting bodies (e.g. ministries of education across different countries) votes to approve legitimate universities, creating a public, tamper-proof on-chain registry of trusted issuers. Approved universities issue degree credentials directly to a graduate's wallet, but only a cryptographic hash of the credential is stored on-chain; the actual degree details stay private, shared only between the university and the graduate. When an employer needs proof of qualification, the graduate shares their credential directly; the employer verifies it in seconds by checking the issuer against the DAO registry and matching the hash on-chain, with no calls, no paperwork, and no unnecessary personal data exposed.
-
-Our solution encapsulates this in a minimalistic application that’s easy to use for all end users.
+Our solution encapsulates this in a minimalistic application that's easy to use for all end users. 
 
 ### What’s next:
-
 We want to extend the same framework beyond degrees to other credentials; citizenship, age verification, professional licenses, turning this into a general-purpose foundation for trustworthy, truly private, digital identity in New Zealand and internationally.
+
 
 ## Architecture
 
