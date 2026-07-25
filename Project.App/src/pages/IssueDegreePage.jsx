@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { isAddress } from 'ethers'
+import { isAddress, BrowserProvider } from 'ethers'
 import { useWallet } from '../hooks/useWallet'
 import { useRegistry } from '../hooks/useRegistry'
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 function Gate({ message }) {
   return (
@@ -19,8 +21,10 @@ export function IssueDegreePage() {
   const [degreeName, setDegreeName] = useState('')
   const [graduationDate, setGraduationDate] = useState('')
   const [fieldOfStudy, setFieldOfStudy] = useState('')
+  const [email, setEmail] = useState('')
   const [formError, setFormError] = useState(null)
   const [success, setSuccess] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -43,15 +47,53 @@ export function IssueDegreePage() {
       setFormError('Field of study is required')
       return
     }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setFormError('Valid email address is required')
+      return
+    }
 
-    // Placeholder for future on-chain logic
-    console.log('Issuing degree:', { graduateAddress, degreeName, graduationDate, fieldOfStudy })
+    setSubmitting(true)
+    try {
+      const credential = {
+        issuer: wallet.address,
+        graduate: graduateAddress,
+        degreeName: degreeName.trim(),
+        graduationDate,
+        fieldOfStudy: fieldOfStudy.trim(),
+        issuedAt: Math.floor(Date.now() / 1000),
+      }
 
-    setSuccess(true)
-    setGraduateAddress('')
-    setDegreeName('')
-    setGraduationDate('')
-    setFieldOfStudy('')
+      const message = JSON.stringify(credential)
+      const provider = new BrowserProvider(window.ethereum)
+      const signer = await provider.getSigner()
+      const signature = await signer.signMessage(message)
+
+      const res = await fetch(`${API_URL}/issue`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential, signature, email: email.trim() }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null)
+        throw new Error(data?.error || `Server error: ${res.status}`)
+      }
+
+      setSuccess(true)
+      setGraduateAddress('')
+      setDegreeName('')
+      setGraduationDate('')
+      setFieldOfStudy('')
+      setEmail('')
+    } catch (err) {
+      if (err.code === 'ACTION_REJECTED') {
+        setFormError('Signature request was rejected')
+      } else {
+        setFormError(err.message || 'Failed to issue degree')
+      }
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const header = (
@@ -156,6 +198,19 @@ export function IssueDegreePage() {
           />
         </div>
 
+        <div>
+          <label htmlFor="email" className="label">Graduate Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="graduate@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="input"
+            required
+          />
+        </div>
+
         {formError && (
           <p className="rounded-lg border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-400">
             {formError}
@@ -168,8 +223,8 @@ export function IssueDegreePage() {
           </p>
         )}
 
-        <button type="submit" className="btn-primary w-full">
-          Issue Degree
+        <button type="submit" className="btn-primary w-full" disabled={submitting}>
+          {submitting ? 'Signing & Sending...' : 'Issue Degree'}
         </button>
       </form>
     </section>
