@@ -1,4 +1,19 @@
-# React + Vite
+# Project.App
+
+The credential app. Universities are accredited by the DAO in
+[`../university-dao`](../university-dao/); this app **only reads the outcome**. It has no
+ministry, voting, or accreditation-application UI — those live in the DAO, deliberately.
+
+- The directory lists universities the DAO has voted into `Accredited`, read over plain RPC
+  (no wallet needed).
+- **Issue Degree** unlocks only when the connected wallet is an accredited university, per
+  the registry's `isAccredited`.
+
+Copy `.env.example` to `.env` and set `VITE_UNIVERSITY_REGISTRY_ADDRESS` to the `registry`
+address in `university-dao/deployments/<chainId>.json`, then `npm run dev`. The read logic
+lives in [`src/hooks/useAccreditation.js`](src/hooks/useAccreditation.js).
+
+## React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

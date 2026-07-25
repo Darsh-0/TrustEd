@@ -1,4 +1,24 @@
-# Sample Hardhat 3 Project (`mocha` and `ethers`)
+# Project.Api
+
+## Accreditation API
+
+Accreditation is decided by the DAO in [`../university-dao`](../university-dao/): ministries
+vote, and an executed proposal moves a university to `Accredited` in its `UniversityRegistry`.
+This API is a **read-only consumer** of that registry — it never proposes, votes, or writes.
+
+Copy `.env.example` to `.env` and point it at the deployed registry (the `registry` field in
+`university-dao/deployments/<chainId>.json`), then `npm run dev`:
+
+| Endpoint | Returns |
+| --- | --- |
+| `GET /api/universities` | Every DAO-accredited university: name, country, key type, DAO-approved public key |
+| `GET /api/universities/:address` | One institution's record, including its `status` |
+| `GET /api/universities/:address/accredited` | `{ accredited: bool }` — the gate for issuing credentials |
+
+Returns `503` when `UNIVERSITY_REGISTRY_ADDRESS` is unset and `502` when the node is
+unreachable. The read logic lives in [`src/dao.ts`](src/dao.ts).
+
+## Contracts (Hardhat)
 
 This project showcases a Hardhat 3 project using `mocha` for tests and the `ethers` library for Ethereum interactions.
 

@@ -310,7 +310,7 @@
 
 .table-head {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1.5fr 80px;
+  grid-template-columns: 1.6fr 2fr 0.8fr 1.2fr 1.2fr 1.2fr;
   padding: 0 24px;
   height: 48px;
   align-items: center;
@@ -611,7 +611,7 @@
 
 .table-row {
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr 1.5fr 80px;
+  grid-template-columns: 1.6fr 2fr 0.8fr 1.2fr 1.2fr 1.2fr;
   padding: 0 24px;
   height: 56px;
   align-items: center;
