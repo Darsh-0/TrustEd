@@ -7,7 +7,7 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 function Gate({ message }) {
 	return (
-		<div className="card mt-6 text-center text-sm text-neutral-500">
+		<div className="card mt-6 text-center text-sm text-on-surface-variant">
 			{message}
 		</div>
 	);
@@ -100,8 +100,8 @@ export function IssueDegreePage() {
 
 	const header = (
 		<div>
-			<h2 className="text-2xl font-bold text-neutral-900">Issue Degree</h2>
-			<p className="mt-1 text-sm text-neutral-500">
+			<h2 className="font-headline text-2xl font-bold text-on-surface">Issue Degree</h2>
+			<p className="mt-1 text-sm text-on-surface-variant">
 				Issue academic credentials to graduates.
 				{isConnected && ` Connected as: ${truncatedAddress}`}
 			</p>
@@ -110,7 +110,7 @@ export function IssueDegreePage() {
 
 	if (!isConnected) {
 		return (
-			<section className="mx-auto max-w-5xl px-6 py-12">
+			<section className="mx-auto max-w-container px-6 py-12 sm:px-10">
 				{header}
 				<Gate message="Connect your wallet to access degree issuance." />
 			</section>
@@ -119,10 +119,10 @@ export function IssueDegreePage() {
 
 	if (wrongNetwork || notConfigured) {
 		return (
-			<section className="mx-auto max-w-5xl px-6 py-12">
+			<section className="mx-auto max-w-container px-6 py-12 sm:px-10">
 				{header}
 				<div className="card mt-6 text-center">
-					<p className="text-sm text-neutral-500">
+					<p className="text-sm text-on-surface-variant">
 						{wrongNetwork
 							? "Connect to the correct network to issue degrees."
 							: "Registry not configured."}
@@ -147,7 +147,7 @@ export function IssueDegreePage() {
 
 	if (loading) {
 		return (
-			<section className="mx-auto max-w-5xl px-6 py-12">
+			<section className="mx-auto max-w-container px-6 py-12 sm:px-10">
 				{header}
 				<Gate message="Loading..." />
 			</section>
@@ -156,7 +156,7 @@ export function IssueDegreePage() {
 
 	if (!isAccredited) {
 		return (
-			<section className="mx-auto max-w-5xl px-6 py-12">
+			<section className="mx-auto max-w-container px-6 py-12 sm:px-10">
 				{header}
 				<Gate message="You must be an accredited university to issue degrees." />
 			</section>
@@ -164,7 +164,7 @@ export function IssueDegreePage() {
 	}
 
 	return (
-		<section className="mx-auto max-w-lg px-6 py-12">
+		<section className="mx-auto max-w-lg px-6 py-12 sm:px-10">
 			{header}
 
 			<form onSubmit={handleSubmit} className="card mt-6 space-y-4">
@@ -243,13 +243,13 @@ export function IssueDegreePage() {
 				</div>
 
 				{formError && (
-					<p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+					<p className="rounded-lg border border-error-container bg-error-container/40 px-3 py-2 text-sm text-on-error-container">
 						{formError}
 					</p>
 				)}
 
 				{success && (
-					<p className="rounded-lg border border-[#17463C]/20 bg-[#17463C]/5 px-3 py-2 text-sm text-[#17463C]">
+					<p className="rounded-lg border border-primary/20 bg-primary-container/10 px-3 py-2 text-sm text-primary">
 						Degree issued successfully!
 					</p>
 				)}
