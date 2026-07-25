@@ -52,7 +52,7 @@ transferRouter.post("/issue", async (req, res) => {
   }
 
   const token = randomBytes(24).toString("hex");
-  const link = `http://localhost:5173/claim?token=${token}`;
+  const link = `https://web3-hackathon-8kad.vercel.app/claim?token=${token}`;
   pending.set(token, {
     credential,
     signature,
