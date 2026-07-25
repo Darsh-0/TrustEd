@@ -3,6 +3,12 @@ import { isAddress } from 'ethers'
 import { useWallet } from '../hooks/useWallet'
 import { useAccreditation } from '../hooks/useAccreditation'
 
+function Gate({ message }) {
+  return (
+    <div className="card mt-6 text-center text-sm text-zinc-400">{message}</div>
+  )
+}
+
 export function IssueDegreePage() {
   const wallet = useWallet()
   const { isConnected, networkName, truncatedAddress } = wallet
@@ -47,133 +53,121 @@ export function IssueDegreePage() {
     setFieldOfStudy('')
   }
 
+  const header = (
+    <div>
+      <h2 className="text-2xl font-semibold text-white">Issue Degree</h2>
+      <p className="mt-1 text-sm text-zinc-400">
+        Issue academic credentials to graduates.
+        {isConnected && ` Connected as: ${truncatedAddress} (${networkName})`}
+      </p>
+    </div>
+  )
+
   if (!isConnected) {
     return (
-      <section id="issue-degree">
-        <div className="page-header">
-          <h2>Issue Degree</h2>
-          <p className="page-sub">Connect your wallet to issue academic credentials.</p>
-        </div>
-        <div className="registry-gate">
-          Connect your wallet to access degree issuance.
-        </div>
+      <section>
+        {header}
+        <Gate message="Connect your wallet to access degree issuance." />
       </section>
     )
   }
 
   if (wrongNetwork || notConfigured) {
     return (
-      <section id="issue-degree">
-        <div className="page-header">
-          <h2>Issue Degree</h2>
-          <p className="page-sub">Issue academic credentials to graduates.</p>
-        </div>
-        <div className="registry-gate">
-          {wrongNetwork
-            ? 'Connect to the correct network to issue degrees.'
-            : 'DAO registry not configured.'}
-        </div>
+      <section>
+        {header}
+        <Gate message={wrongNetwork ? 'Connect to the correct network to issue degrees.' : 'DAO registry not configured.'} />
       </section>
     )
   }
 
   if (loading) {
     return (
-      <section id="issue-degree">
-        <div className="page-header">
-          <h2>Issue Degree</h2>
-          <p className="page-sub">Issue academic credentials to graduates.</p>
-        </div>
-        <div className="registry-gate">Loading...</div>
+      <section>
+        {header}
+        <Gate message="Loading..." />
       </section>
     )
   }
 
   if (!isAccredited) {
     return (
-      <section id="issue-degree">
-        <div className="page-header">
-          <h2>Issue Degree</h2>
-          <p className="page-sub">Issue academic credentials to graduates.</p>
-        </div>
-        <div className="registry-gate">
-          Only universities accredited by the DAO can issue degrees. This address is not
-          accredited.
-        </div>
+      <section>
+        {header}
+        <Gate message="Only universities accredited by the DAO can issue degrees. This address is not accredited." />
       </section>
     )
   }
 
   return (
-    <section id="issue-degree">
-      <div className="page-header">
-        <h2>Issue Degree</h2>
-        <p className="page-sub">
-          Issue academic credentials to graduates. Connected as: {truncatedAddress} ({networkName})
-        </p>
-      </div>
+    <section className="mx-auto max-w-lg">
+      {header}
 
-      <form className="degree-form" onSubmit={handleSubmit}>
-        <div className="form-field">
-          <label htmlFor="graduateAddress">Graduate Wallet Address</label>
+      <form onSubmit={handleSubmit} className="card mt-6 space-y-4">
+        <div>
+          <label htmlFor="graduateAddress" className="label">Graduate Wallet Address</label>
           <input
             id="graduateAddress"
             type="text"
             placeholder="0x..."
             value={graduateAddress}
             onChange={(e) => setGraduateAddress(e.target.value)}
-            className="form-input"
+            className="input"
             required
           />
         </div>
 
-        <div className="form-field">
-          <label htmlFor="degreeName">Degree Name</label>
+        <div>
+          <label htmlFor="degreeName" className="label">Degree Name</label>
           <input
             id="degreeName"
             type="text"
             placeholder="e.g., Bachelor of Science"
             value={degreeName}
             onChange={(e) => setDegreeName(e.target.value)}
-            className="form-input"
+            className="input"
             required
           />
         </div>
 
-        <div className="form-field">
-          <label htmlFor="graduationDate">Graduation Date</label>
+        <div>
+          <label htmlFor="graduationDate" className="label">Graduation Date</label>
           <input
             id="graduationDate"
             type="date"
             value={graduationDate}
             onChange={(e) => setGraduationDate(e.target.value)}
-            className="form-input"
+            className="input"
             required
           />
         </div>
 
-        <div className="form-field">
-          <label htmlFor="fieldOfStudy">Field of Study</label>
+        <div>
+          <label htmlFor="fieldOfStudy" className="label">Field of Study</label>
           <input
             id="fieldOfStudy"
             type="text"
             placeholder="e.g., Computer Science"
             value={fieldOfStudy}
             onChange={(e) => setFieldOfStudy(e.target.value)}
-            className="form-input"
+            className="input"
             required
           />
         </div>
 
-        {formError && <div className="form-error">{formError}</div>}
-
-        {success && (
-          <div className="form-success">
-            Degree issued successfully!
-          </div>
+        {formError && (
+          <p className="rounded-lg border border-red-900/60 bg-red-950/40 px-3 py-2 text-sm text-red-400">
+            {formError}
+          </p>
         )}
 
-        <button type="submit" className="btn-issue">
+        {success && (
+          <p className="rounded-lg border border-lime-900/60 bg-lime-950/40 px-3 py-2 text-sm text-lime-400">
+            Degree issued successfully!
+          </p>
+        )}
+
+        <button type="submit" className="btn-primary w-full">
           Issue Degree
         </button>
       </form>
