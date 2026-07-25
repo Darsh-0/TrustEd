@@ -42,7 +42,7 @@ After deployment **no EOA holds any privileged role anywhere in the system.** Th
 | `AccreditationGovernor` | OZ Governor v5 (settings + simple counting + votes + timelock control) with an **absolute member-count quorum** (default 3) that governance itself can amend via `setQuorum`. `proposalThreshold = 1`: any member may propose. |
 | `TimelockController` | Owner of the token and the registry. Only the governor may propose/cancel; anyone may execute a matured operation. |
 
-> **Playground UI:** an interactive frontend (role-switcher, live on-chain activity feed, chain-time controls) lives in [`../university-dao-frontend`](../university-dao-frontend/) — `npm install && npm run dev` there once this repo is deployed to a local anvil.
+> **Playground UI:** an interactive tool (role-switcher, live on-chain activity feed, chain-time controls) lives in [`../university-dao-tool`](../university-dao-tool/) — run `./4-start-dao-tool.sh` from the repo root once the chain is up.
 
 ## Quickstart
 
@@ -51,7 +51,6 @@ Requires [Foundry](https://getfoundry.sh).
 ```bash
 forge install   # if lib/ is not already populated
 forge build
-forge test
 ```
 
 ### One-command demo
@@ -116,13 +115,9 @@ Every other action is a standard Governor proposal; only the encoded call differ
 | Disinvite ministry | membership | `revokeMembership(ministry)` |
 | Change quorum | governor | `setQuorum(n)` |
 
-Lifecycle: `propose` → wait `votingDelay` → `castVote` (1 = For) from ≥ quorum members → wait out `votingPeriod` → `queue` → wait `minDelay` → `execute`. Note that `queue` and `execute` take the same `targets/values/calldatas` plus `keccak256(bytes(description))` — **not** the proposal id (see the helpers in `test/Governance.t.sol`).
+Lifecycle: `propose` → wait `votingDelay` → `castVote` (1 = For) from ≥ quorum members → wait out `votingPeriod` → `queue` → wait `minDelay` → `execute`. Note that `queue` and `execute` take the same `targets/values/calldatas` plus `keccak256(bytes(description))` — **not** the proposal id (see the helpers in `script/DemoFlow.s.sol`).
 
 No custom frontend needed for governance: the governor is **Tally-compatible out of the box** — point [Tally](https://www.tally.xyz) at the deployed governor address on a testnet and you get a full governance UI for free.
-
-## Tests
-
-`forge test` — 42 tests, including the full lifecycle, quorum failure, snapshot semantics (a ministry invited after a proposal's snapshot cannot vote on it; one revoked mid-vote keeps its power for that proposal — correct behaviour, asserted rather than "fixed"), soulbound transfer reverts, auto-delegation, permissionless application, staged key rotation, and `setQuorum` gating. `test/Governance.t.sol` is the one that matters.
 
 ## Limitations (honest ones)
 

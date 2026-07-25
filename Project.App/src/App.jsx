@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom'
 import { WalletConnect } from './components/WalletConnect'
 import { useWallet } from './hooks/useWallet'
-import { useRegistry } from './hooks/useRegistry'
+import { useAccreditation } from './hooks/useAccreditation'
 import { LandingPage } from './pages/LandingPage'
 import { RegistryPage } from './pages/RegistryPage'
 import { IssueDegreePage } from './pages/IssueDegreePage'
@@ -12,8 +12,7 @@ import { VerifyPage } from './pages/VerifyPage'
 function App() {
 	const wallet = useWallet()
 	const { isConnected } = wallet
-	const { isEducator } = useRegistry(wallet)
-
+	const { isAccredited } = useAccreditation(wallet)
 
 	return (
 		<div className="min-h-screen">
@@ -23,9 +22,9 @@ function App() {
 					<span className="text-sm font-semibold text-white">Degree</span>
 				</Link>
 				<nav className="flex items-center gap-6 text-sm">
-					<Link to="/registry" className="text-zinc-400 transition hover:text-white">Educators</Link>
+					<Link to="/registry" className="text-zinc-400 transition hover:text-white">Universities</Link>
 					<Link to="/verify" className="text-zinc-400 transition hover:text-white">Verify</Link>
-					{isConnected && isEducator && (
+					{isConnected && isAccredited && (
 						<Link to="/issue-degree" className="text-zinc-400 transition hover:text-white">Issue Degree</Link>
 					)}
 				</nav>
