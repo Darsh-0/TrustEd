@@ -67,6 +67,15 @@ function App() {
           <Route path="/claim" element={<ClaimPage />} />
         </Routes>
       </main>
+
+      <footer className="border-t border-surface-container-high">
+        <div className="mx-auto flex w-full max-w-container items-center justify-between gap-4 px-6 py-8 text-sm text-on-surface-variant sm:px-10">
+          <span className="font-headline text-xl font-extrabold tracking-tight text-on-surface">
+            TrustEd
+          </span>
+          <span>© {new Date().getFullYear()}. All rights reserved.</span>
+        </div>
+      </footer>
     </div>
   );
 }

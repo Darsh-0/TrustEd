@@ -1,4 +1,47 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+
+const fraudStats = [
+  {
+    value: "35%",
+    text: "of Associate's degrees presented to employers are falsely claimed.",
+    source: "Attewell & Domina, 2011",
+  },
+  {
+    value: "6%",
+    text: "of Bachelor's degrees are falsely claimed.",
+    source: "Attewell & Domina, 2011",
+  },
+  {
+    value: "7,600+",
+    text: "fraudulent nursing diplomas sold in one U.S. scheme.",
+    source: "DOJ indictment, Miami",
+  },
+  {
+    value: "44%",
+    text: "of UK CVs reviewed had education discrepancies.",
+    source: "UK CV audit",
+  },
+  {
+    value: "10%",
+    text: "of UK CVs reviewed had false grades.",
+    source: "UK CV audit",
+  },
+  {
+    value: "7 weeks",
+    text: "was all one NZ job applicant attended before claiming a bachelor's degree.",
+    source: "NZQA",
+  },
+];
+
+const sampleRecipients = [
+  "Darsh Gandhi",
+  "Ed Leonard",
+  "Reuben Donnison",
+  "Sienna Robinson",
+  "Siegfried",
+  "nistorv",
+];
 
 const problems = [
   {
@@ -75,18 +118,34 @@ const highlights = [
 ];
 
 export function LandingPage() {
+  const recipient = useMemo(
+    () => sampleRecipients[Math.floor(Math.random() * sampleRecipients.length)],
+    []
+  );
+
+  const [statIndex, setStatIndex] = useState(0);
+  const [statVisible, setStatVisible] = useState(true);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setStatVisible(false);
+      setTimeout(() => {
+        setStatIndex((i) => (i + 1) % fraudStats.length);
+        setStatVisible(true);
+      }, 400);
+    }, 7000);
+    return () => clearInterval(id);
+  }, []);
+
+  const stat = fraudStats[statIndex];
+
   return (
     <div className="bg-surface text-on-surface">
       {/* Hero */}
       <section className="mx-auto max-w-container px-6 pb-20 pt-14 sm:px-10 sm:pt-20">
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-container/10 px-3 py-1.5 font-label text-xs font-semibold text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              DAO-Verified Network
-            </span>
-
-            <h1 className="mt-6 font-headline text-4xl font-extrabold leading-[1.1] tracking-tight text-on-surface sm:text-5xl">
+            <h1 className="font-headline text-4xl font-extrabold leading-[1.1] tracking-tight text-on-surface sm:text-5xl">
               Immutable academic credentials.
             </h1>
 
@@ -100,7 +159,7 @@ export function LandingPage() {
                 See Educators
               </Link>
               <Link to="/share" className="btn-outline">
-                Share
+                Share Credentials
               </Link>
             </div>
           </div>
@@ -113,13 +172,22 @@ export function LandingPage() {
                 <span className="h-2.5 w-2.5 rounded-full bg-surface-container-highest" />
                 <span className="ml-3 h-5 flex-1 rounded bg-surface-container" />
               </div>
-              <div className="flex flex-col items-center justify-center gap-3 bg-surface-container-lowest px-8 py-14 text-center">
-                <p className="font-headline text-5xl font-extrabold leading-none text-on-surface">
-                  35%
-                </p>
-                <p className="max-w-[220px] text-sm text-on-surface-variant">
-                  of associate degrees presented to employers are fake.
-                </p>
+              <div className="flex h-64 flex-col items-center justify-center overflow-hidden bg-surface-container-lowest px-8 text-center">
+                <div
+                  className={`flex w-full flex-col items-center gap-3 transition-opacity duration-[400ms] ease-in-out ${
+                    statVisible ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <p className="font-headline text-5xl font-extrabold leading-none text-on-surface">
+                    {stat.value}
+                  </p>
+                  <p className="mx-auto max-w-[220px] text-sm text-on-surface-variant">
+                    {stat.text}
+                  </p>
+                  <p className="text-xs text-on-surface-variant/70">
+                    {stat.source}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -186,10 +254,16 @@ export function LandingPage() {
                   VERIFIED
                 </span>
               </div>
-              <div className="mt-6 space-y-2">
-                <div className="h-3 w-3/4 rounded bg-surface-container-highest" />
-                <div className="h-3 w-full rounded bg-surface-container-highest" />
-                <div className="h-3 w-1/2 rounded bg-surface-container-highest" />
+              <div className="mt-6 space-y-1">
+                <p className="font-headline text-base font-bold text-on-surface">
+                  Bachelor of Software Engineering
+                </p>
+                <p className="text-sm text-on-surface-variant">
+                  University of Auckland
+                </p>
+                <p className="text-sm text-on-surface-variant">
+                  Awarded to {recipient}
+                </p>
               </div>
               <div className="mt-6 flex items-center justify-between border-t border-surface-container-highest pt-4 text-xs text-on-surface-variant">
                 <span>Verified Dec 2023</span>
@@ -220,7 +294,7 @@ export function LandingPage() {
 
           <div>
             <h2 className="font-headline text-3xl font-bold leading-tight text-on-surface">
-              DAO-Verified. Privacy-Preserving.
+              Credentials proven, privacy preserved.
             </h2>
             <p className="mt-4 text-sm text-on-surface-variant">
               Built for graduates, universities, and employers. Solving degree
@@ -252,7 +326,7 @@ export function LandingPage() {
                   <span className="text-on-surface-variant">
                     <span className="font-semibold text-on-surface">
                       {item.title}
-                    </span>
+                    </span>{" "}
                     {item.description}
                   </span>
                 </li>
@@ -267,7 +341,7 @@ export function LandingPage() {
         <div className="relative overflow-hidden rounded-xl bg-primary px-6 py-16 text-center sm:px-16">
           <div className="relative mx-auto max-w-2xl">
             <h2 className="font-headline text-3xl font-bold leading-tight text-on-primary sm:text-4xl">
-              The future of academic integrity starts here.
+              Stop fake degrees before they reach a hiring desk.
             </h2>
             <p className="mt-4 text-sm text-inverse-primary">
               Join the growing network of universities securing the future for
