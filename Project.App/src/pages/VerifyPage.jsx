@@ -1,66 +1,39 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
-export function VerifyPage() {
-  const [graduateAddress, setGraduateAddress] = useState('')
-  const [degreeId, setDegreeId] = useState('')
-  const [result, setResult] = useState(null)
+const API = import.meta.env.VITE_API_URL
 
-  const handleVerify = async (e) => {
-    e.preventDefault()
-    setResult(null)
+export default function VerifyPage() {
+	const [result, setResult] = useState({ state: 'loading' })
 
-    // Placeholder for future on-chain verification logic
-    console.log('Verifying degree:', { graduateAddress, degreeId })
+	useEffect(() => {
+		const token = new URLSearchParams(window.location.search).get('token')
+		if (!token) return setResult({ state: 'error', reason: 'no token in link' })
 
-    setResult({
-      verified: false,
-      message: 'Degree verification functionality coming soon.',
-    })
-  }
+		fetch(`${API}/redeem/${token}`)
+			.then(r => r.json())
+			.then(data => setResult({ state: 'done', ...data }))
+			.catch(() => setResult({ state: 'error', reason: 'could not reach server' }))
+	}, [])
 
-  return (
-    <section className="mx-auto max-w-lg">
-      <h2 className="text-2xl font-semibold text-white">Verify a degree</h2>
-      <p className="mt-1 text-sm text-zinc-400">
-        Check whether a graduate holds a verified academic degree on-chain.
-      </p>
+	if (result.state === 'loading') return <p style={{ padding: 32 }}>Verifying…</p>
 
-      <form onSubmit={handleVerify} className="card mt-6 space-y-4">
-        <div>
-          <label htmlFor="graduateAddress" className="label">Graduate Wallet Address</label>
-          <input
-            id="graduateAddress"
-            type="text"
-            placeholder="0x..."
-            value={graduateAddress}
-            onChange={(e) => setGraduateAddress(e.target.value)}
-            className="input"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="degreeId" className="label">Degree ID (optional)</label>
-          <input
-            id="degreeId"
-            type="text"
-            placeholder="e.g., DEG-2026-001"
-            value={degreeId}
-            onChange={(e) => setDegreeId(e.target.value)}
-            className="input"
-          />
-        </div>
-
-        <button type="submit" className="btn-primary w-full">
-          Verify Degree
-        </button>
-
-        {result && (
-          <p className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-300">
-            {result.message}
-          </p>
-        )}
-      </form>
-    </section>
-  )
+	return (
+		<div style={{ padding: 32, maxWidth: 520 }}>
+			<h2>Credential verification</h2>
+			{result.ok ? (
+				<div style={{ color: 'green' }}>
+					<p style={{ fontSize: 20 }}>✓ Verified</p>
+					<p><strong>Degree:</strong> {result.degree}</p>
+					<p><strong>Issued by (accredited):</strong> {result.issuer}</p>
+					<p><strong>Held by wallet:</strong> {result.holder}</p>
+					<p><strong>Issued at:</strong> {result.issuedAt}</p>
+				</div>
+			) : (
+				<div style={{ color: 'crimson' }}>
+					<p style={{ fontSize: 20 }}>✗ Not verified</p>
+					<p>{result.reason}</p>
+				</div>
+			)}
+		</div>
+	)
 }
