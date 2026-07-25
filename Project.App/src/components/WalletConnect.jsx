@@ -1,5 +1,5 @@
-import { useWallet } from '../hooks/useWallet'
 import { useState } from 'react'
+import { useWallet } from '../hooks/useWallet'
 
 function CopyIcon({ className }) {
 	return (
@@ -79,7 +79,6 @@ export function WalletConnect() {
 		disconnect,
 	} = useWallet()
 
-
 	if (!hasWallet) {
 		return (
 			<a
@@ -99,7 +98,7 @@ export function WalletConnect() {
 			{isConnected ? (
 				<>
 					<AddressChip address={address} truncatedAddress={truncatedAddress} />
-					<button className="btn-outline cursor-pointer" onClick={disconnect}>
+					<button className="btn-outline" onClick={disconnect}>
 						Disconnect
 					</button>
 				</>
