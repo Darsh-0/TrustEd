@@ -1,85 +1,85 @@
 /* Immutable Trust design system — import this after your Tailwind base/
    components/utilities layers (e.g. from index.css: @import "./theme.css";) */
 
-@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Work+Sans:wght@400;500&family=Hanken+Grotesk:wght@500;600&display=swap");
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Work+Sans:wght@400;500&family=Hanken+Grotesk:wght@500;600&display=swap");
 
 @theme {
-  --color-surface: #f1fbff;
-  --color-surface-dim: #d1dce0;
-  --color-surface-bright: #f1fbff;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #eaf5fa;
-  --color-surface-container: #e4f0f4;
-  --color-surface-container-high: #dfeaef;
-  --color-surface-container-highest: #d9e4e9;
-  --color-on-surface: #131d21;
-  --color-on-surface-variant: #404946;
-  --color-primary: #00352e;
-  --color-on-primary: #ffffff;
-  --color-primary-container: #0d4d44;
-  --color-on-primary-container: #83bdb1;
-  --color-inverse-primary: #98d2c5;
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
-  --color-outline-variant: #bfc9c5;
+	--color-surface: #f1fbff;
+	--color-surface-dim: #d1dce0;
+	--color-surface-bright: #f1fbff;
+	--color-surface-container-lowest: #ffffff;
+	--color-surface-container-low: #eaf5fa;
+	--color-surface-container: #e4f0f4;
+	--color-surface-container-high: #dfeaef;
+	--color-surface-container-highest: #d9e4e9;
+	--color-on-surface: #131d21;
+	--color-on-surface-variant: #404946;
+	--color-primary: #00352e;
+	--color-on-primary: #ffffff;
+	--color-primary-container: #0d4d44;
+	--color-on-primary-container: #83bdb1;
+	--color-inverse-primary: #98d2c5;
+	--color-error: #ba1a1a;
+	--color-on-error: #ffffff;
+	--color-error-container: #ffdad6;
+	--color-on-error-container: #93000a;
+	--color-outline-variant: #bfc9c5;
 
-  --font-headline: "Manrope", sans-serif;
-  --font-body: "Work Sans", sans-serif;
-  --font-label: "Hanken Grotesk", sans-serif;
+	--font-headline: "Manrope", sans-serif;
+	--font-body: "Work Sans", sans-serif;
+	--font-label: "Hanken Grotesk", sans-serif;
 
-  --radius-sm: 0.125rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+	--radius-sm: 0.125rem;
+	--radius-md: 0.375rem;
+	--radius-lg: 0.5rem;
+	--radius-xl: 0.75rem;
 
-  --shadow-ambient: 0 4px 16px 0 rgba(0, 53, 46, 0.12);
+	--shadow-ambient: 0 4px 16px 0 rgba(0, 53, 46, 0.12);
 
-  --breakpoint-container: 1200px;
+	--breakpoint-container: 1200px;
 }
 
 body {
-  background-color: #f1fbff;
-  color: #131d21;
-  font-family: "Work Sans", sans-serif;
+	background-color: #f1fbff;
+	color: #131d21;
+	font-family: "Work Sans", sans-serif;
 }
 
 @layer components {
-  .card {
-    @apply rounded-lg border border-surface-container-highest p-6;
-  }
+	.card {
+		@apply rounded-lg border border-surface-container-highest p-6;
+	}
 
-  .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-label text-sm font-semibold text-on-primary transition-colors hover:bg-primary-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
-  }
+	.btn-primary {
+		@apply inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-label text-sm font-semibold text-on-primary transition-colors hover:bg-primary-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
+	}
 
-  .btn-outline {
-    @apply inline-flex items-center justify-center rounded-md border border-primary px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
-  }
+	.btn-outline {
+		@apply inline-flex items-center justify-center rounded-md border border-primary px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
+	}
 
-  .btn-primary-inverse {
-    @apply inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
-  }
+	.btn-primary-inverse {
+		@apply inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
+	}
 
-  .btn-outline-inverse {
-    @apply inline-flex items-center justify-center rounded-md border border-white/70 px-6 py-3 font-label text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
-  }
+	.btn-outline-inverse {
+		@apply inline-flex items-center justify-center rounded-md border border-white/70 px-6 py-3 font-label text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
+	}
 
-  .input {
-    @apply w-full rounded border border-outline-variant bg-[#f9f9f9] px-3 py-2 font-body text-sm text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:outline-none;
-  }
+	.input {
+		@apply w-full rounded border border-outline-variant bg-[#f9f9f9] px-3 py-2 font-body text-sm text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary focus:outline-none;
+	}
 
-  .label {
-    @apply mb-1 block font-label text-xs font-semibold uppercase tracking-wide text-on-surface-variant;
-  }
+	.label {
+		@apply mb-1 block font-label text-xs font-semibold uppercase tracking-wide text-on-surface-variant;
+	}
 
-  .nav-link {
-    @apply rounded-sm font-label text-sm font-semibold tracking-wide text-on-surface-variant transition-colors hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary;
-  }
+	.nav-link {
+		@apply rounded-sm font-label text-sm font-semibold tracking-wide text-on-surface-variant transition-colors hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary;
+	}
 
-  .nav-link-active {
-    @apply text-on-surface underline decoration-2 underline-offset-8;
-  }
+	.nav-link-active {
+		@apply text-on-surface underline decoration-2 underline-offset-8;
+	}
 }

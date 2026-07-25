@@ -3,6 +3,11 @@
 
 # Compilation output
 /dist
+/artifacts
+/cache
+
+# Hardhat Ignition deployments
+/ignition/deployments
 
 # pnpm deploy output
 /bundle
