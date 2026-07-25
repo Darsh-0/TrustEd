@@ -14,3 +14,16 @@ export async function saveCredential(bundle) {
 export async function listCredentials() {
 	return (await db()).getAll('creds')
 }
+
+export async function getCredential(id) {
+	return (await db()).get('creds', id)
+}
+
+export async function getCredentialsByAddress(address) {
+	const all = await listCredentials()
+	const lower = address.toLowerCase()
+	return all.filter(c => {
+		const graduate = c.credential?.graduate
+		return graduate && graduate.toLowerCase() === lower
+	})
+}

@@ -17,8 +17,8 @@ export function LandingPage() {
         <Link to="/issue-degree" className="btn-primary">
           Issue Degree
         </Link>
-        <Link to="/verify" className="btn-outline">
-          Verify Degree
+        <Link to="/share" className="btn-outline">
+          Share
         </Link>
       </div>
     </section>

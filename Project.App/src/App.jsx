@@ -1,7 +1,9 @@
+import { useEffect, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import { WalletConnect } from "./components/WalletConnect";
 import { useWallet } from "./hooks/useWallet";
 import { useAccreditation } from "./hooks/useAccreditation";
+import { getCredentialsByAddress } from "./lib/store";
 import { LandingPage } from "./pages/LandingPage";
 import { RegistryPage } from "./pages/RegistryPage";
 import { IssueDegreePage } from "./pages/IssueDegreePage";
@@ -12,8 +14,18 @@ import SharePage from "./pages/SharePage.jsx";
 
 function App() {
 	const wallet = useWallet();
-	const { isConnected } = wallet;
+	const { isConnected, address } = wallet;
 	const { isAccredited } = useAccreditation(wallet);
+	const [hasCredentials, setHasCredentials] = useState(false);
+
+	useEffect(() => {
+		if (!isConnected || !address) return;
+		let cancelled = false;
+		getCredentialsByAddress(address).then(creds => {
+			if (!cancelled) setHasCredentials(creds.length > 0);
+		});
+		return () => { cancelled = true; };
+	}, [isConnected, address]);
 
 	return (
 		<div className="min-h-screen">
@@ -29,12 +41,14 @@ function App() {
 					>
 						Educators
 					</Link>
-					<Link
-						to="/verify"
-						className="text-zinc-400 transition hover:text-white"
-					>
-						Verify
-					</Link>
+					{isConnected && hasCredentials && (
+						<Link
+							to="/share"
+							className="text-zinc-400 transition hover:text-white"
+						>
+							Share
+						</Link>
+					)}
 					{isConnected && isAccredited && (
 						<Link
 							to="/issue-degree"
