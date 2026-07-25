@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import studentNormal from "../assets/normal.png";
-import studentTicked from "../assets/Tick.png";
 
 // TrustEd brand colours — primary deep green: #17463C
 export function LandingPage() {
@@ -21,11 +20,7 @@ export function LandingPage() {
             alt="Graduate"
             className="absolute inset-0 h-full w-full object-contain"
           />
-          <img
-            src={studentTicked}
-            alt="Verified graduate"
-            className="verify-tick absolute inset-0 h-full w-full object-contain"
-          />
+
         </div>
 
         {/* CTAs — same routes as the original page */}
