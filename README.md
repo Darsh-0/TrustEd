@@ -42,62 +42,82 @@ Four pieces:
 | [`university-dao/`](university-dao/) | The DAO. Ministries vote universities into accreditation; the `UniversityRegistry` is the result. Foundry. |
 | [`Project.Api/`](Project.Api/) | Read-only API over the DAO registry, plus credential issue/claim routes. Express + ethers. |
 | [`Project.App/`](Project.App/) | The credential app. Lists accredited universities and gates degree issuance on accreditation. React + Vite. |
-| [`university-dao-tool/`](university-dao-tool/) | The governance playground: switch roles, propose, vote, queue, execute, and watch a live decoded event feed. Svelte + viem. |
 
 The DAO is the only source of truth for accreditation. The API and the app **read** it and
 never write to it — there is no ministry, voting, or application UI in them. Everything that
-*produces* an accreditation lives in the DAO tool.
+*produces* an accreditation lives in the DAO contracts.
 
 ## Running it
 
-Needs [Foundry](https://getfoundry.sh) and [Node.js](https://nodejs.org). Each script owns a
-terminal:
+Needs [Foundry](https://getfoundry.sh) and [Node.js](https://nodejs.org).
 
 ```bash
-# Terminal 1 — anvil + deploy the DAO + wire up the .env files. Leave it running.
-./1-start-chain.sh
+# Start the full stack: anvil + deploy the DAO + API + app. Leave it running.
+./start-all.sh
 
-# Terminal 2 — the accreditation API on http://localhost:5000
-./2-start-api.sh
-
-# Terminal 3 — the credential app on http://localhost:5173
-./3-start-app.sh
-
-# Terminal 4 — the DAO governance tool on http://localhost:5174 (optional)
-./4-start-dao-tool.sh
+# Start the full stack and seed demo universities in one go
+./start-all.sh --seed
 ```
 
-A fresh DAO has an empty registry, so the app starts with an empty directory. To put real
-data behind it, run this once (any terminal) — it drives the actual governance flow, so the
-universities are accredited because the DAO voted them in:
+This starts:
+- **Chain** on `http://127.0.0.1:8545` (chain 31337)
+- **API** on `http://localhost:5000`
+- **App** on `http://localhost:5173`
+
+A fresh DAO has an empty registry, so the app starts with an empty directory. If you didn't
+use `--seed`, you can seed demo universities separately (any terminal) — it drives the actual
+governance flow, so the universities are accredited because the DAO voted them in:
 
 ```bash
 ./seed-demo.sh
 ```
 
-`1-start-chain.sh` writes the deployed addresses into each project's `.env`, so nothing else
-needs configuring. Ctrl-C on terminal 1 stops the chain and discards its state; re-running
+`start-all.sh` writes the deployed addresses into each project's `.env`, so nothing else
+needs configuring. Ctrl-C stops the chain and discards its state; re-running
 redeploys from scratch.
 
-If port 8545 is taken, run every script with the same override:
+If port 8545 is taken, run with a port override:
 
 ```bash
-ANVIL_PORT=8546 ./1-start-chain.sh
+ANVIL_PORT=8546 ./start-all.sh
 ```
 
 The API defaults to port 5000, which macOS uses for AirPlay Receiver. Either turn that off in
-System Settings → General → AirDrop & Handoff, or use `PORT=5001 ./2-start-api.sh`.
+System Settings → General → AirDrop & Handoff, or use `PORT=5001 ./start-all.sh`.
+
+## Environment Variables
+
+`start-all.sh` automatically wires the following variables into each project's `.env`:
+
+### Project.Api/.env
+
+| Variable                      | Set by script | Description                                                  |
+| ----------------------------- | ------------- | ------------------------------------------------------------ |
+| `UNIVERSITY_REGISTRY_ADDRESS` | ✓             | Deployed UniversityRegistry contract address                 |
+| `RPC_URL`                     | ✓             | RPC endpoint for the local anvil chain                       |
+| `APP_BASE_URL`                | ✓             | Frontend app URL (used in credential claim/verify emails)    |
+| `PORT`                        |               | API server port (defaults to 5000)                           |
+| `FROM_EMAIL`                  |               | Sender email for credential notifications (e.g. via Resend)  |
+| `RESEND_API_KEY`              |               | API key for the email service                                |
+
+### Project.App/.env
+
+| Variable                              | Set by script | Description                                        |
+| ------------------------------------- | ------------- | -------------------------------------------------- |
+| `VITE_UNIVERSITY_REGISTRY_ADDRESS`    | ✓             | Deployed UniversityRegistry contract address       |
+| `VITE_RPC_URL`                        | ✓             | RPC endpoint for the local anvil chain             |
+| `VITE_REGISTRY_CHAIN_ID`              | ✓             | Chain ID (31337 for local anvil)                   |
+| `VITE_API_URL`                        | ✓             | Backend API URL (defaults to http://localhost:5000)|
+
+Variables marked "Set by script" are automatically configured when you run `start-all.sh`.
+The remaining variables must be set manually if you need their functionality (e.g. email
+notifications require `FROM_EMAIL` and `RESEND_API_KEY`).
 
 ## Connecting a wallet
 
 The directory loads without a wallet. To issue a degree you need to connect as an accredited
 university: point MetaMask at `http://127.0.0.1:8545` (chain 31337) and import one of the
 university accounts `seed-demo.sh` prints when it finishes.
-
-The DAO tool needs no wallet at all — it signs with anvil's dev keys and lets you play any
-role from a dropdown. It also ships its own richer seed (`npm run smoke` in
-`university-dao-tool/`), which sets up an accredited university, a staged key rotation, and a
-live proposal in one go.
 
 ## Project Structure
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Shared helpers for the 1-/2-/3- start scripts. Not meant to be run directly.
+# Shared helpers for start-all.sh and seed-demo.sh. Not meant to be run directly.
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -49,7 +49,7 @@ ensure_deps() {
 }
 
 require_deployment() {
-  [ -f "$DEPLOYMENT_JSON" ] || die "No DAO deployment found at ${DEPLOYMENT_JSON}. Run ./1-start-chain.sh first."
+  [ -f "$DEPLOYMENT_JSON" ] || die "No DAO deployment found at ${DEPLOYMENT_JSON}. Run ./start-all.sh first."
   cast block-number --rpc-url "$RPC_URL" >/dev/null 2>&1 \
-    || die "No chain reachable at ${RPC_URL}. Run ./1-start-chain.sh first."
+    || die "No chain reachable at ${RPC_URL}. Run ./start-all.sh first."
 }
