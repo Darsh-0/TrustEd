@@ -162,16 +162,10 @@ export default function ClaimPage() {
 	}
 
 	return (
-		<section className="mx-auto max-w-lg">
-			<div className="card mt-6 text-center">
-				<h2 className="text-lg font-semibold text-white">Claim Your Credential</h2>
-				<p className="mt-2 text-sm text-zinc-400">
-					Sign a message to prove you own this wallet, then claim your degree.
-				</p>
-				<button onClick={handleClaim} className="btn-primary mt-4">
-					Claim Credential
-				</button>
-			</div>
-		</section>
+		<div style={{ padding: 32 }}>
+			{status === 'loading' && <p>Loading your credential…</p>}
+			{status === 'saved' && <p>✓ Credential saved to this device.</p>}
+			{status !== 'loading' && status !== 'saved' && <p style={{ color: 'crimson' }}>{status}</p>}
+		</div>
 	)
 }
