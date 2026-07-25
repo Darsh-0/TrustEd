@@ -19,6 +19,8 @@ function truncateAddress(address) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
+const DISCONNECT_KEY = 'degree:walletDisconnected'
+
 export function WalletProvider({ children }) {
   const [address, setAddress] = useState(null)
   const [chainId, setChainId] = useState(null)
@@ -32,15 +34,22 @@ export function WalletProvider({ children }) {
     setIsConnecting(true)
     setError(null)
     try {
+      try {
+        await window.ethereum.request({
+          method: 'wallet_requestPermissions',
+          params: [{ eth_accounts: {} }],
+        })
+      } catch (err) {
+        if (err.code === 4001) throw err
+        await window.ethereum.request({ method: 'eth_requestAccounts', params: [] })
+      }
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+      if (!accounts || accounts.length === 0) throw new Error('No account returned.')
       const provider = new BrowserProvider(window.ethereum)
-      await provider.send('eth_requestAccounts', [])
-      const signer = await provider.getSigner()
-      const [addr, network] = await Promise.all([
-        signer.getAddress(),
-        provider.getNetwork(),
-      ])
-      setAddress(addr)
+      const network = await provider.getNetwork()
+      setAddress(accounts[0])
       setChainId(Number(network.chainId))
+      localStorage.removeItem(DISCONNECT_KEY)
     } catch (err) {
       setError(err.code === 4001 ? 'Connection rejected.' : err.message)
     } finally {
@@ -48,7 +57,14 @@ export function WalletProvider({ children }) {
     }
   }, [hasWallet])
 
-  const disconnect = useCallback(() => {
+  const disconnect = useCallback(async () => {
+    localStorage.setItem(DISCONNECT_KEY, '1')
+    try {
+      await window.ethereum?.request({
+        method: 'wallet_revokePermissions',
+        params: [{ eth_accounts: {} }],
+      })
+    } catch { /* wallet may not support revokePermissions */ }
     setAddress(null)
     setChainId(null)
     setError(null)
@@ -85,11 +101,13 @@ export function WalletProvider({ children }) {
   useEffect(() => {
     if (!hasWallet) return
 
-    // Silently check if already authorised (no prompt)
+    if (localStorage.getItem(DISCONNECT_KEY) === '1') return
+
     window.ethereum
       .request({ method: 'eth_accounts' })
       .then(async (accounts) => {
         if (accounts.length === 0) return
+        if (localStorage.getItem(DISCONNECT_KEY) === '1') return
         const provider = new BrowserProvider(window.ethereum)
         const network = await provider.getNetwork()
         setAddress(accounts[0])
@@ -98,6 +116,7 @@ export function WalletProvider({ children }) {
       .catch(() => {})
 
     const handleAccountsChanged = (accounts) => {
+      if (localStorage.getItem(DISCONNECT_KEY) === '1') return
       if (accounts.length === 0) {
         setAddress(null)
         setChainId(null)
@@ -106,7 +125,6 @@ export function WalletProvider({ children }) {
       }
     }
 
-    // Chain changes require a reload — provider state becomes stale otherwise
     const handleChainChanged = () => window.location.reload()
 
     window.ethereum.on('accountsChanged', handleAccountsChanged)

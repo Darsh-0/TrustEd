@@ -58,10 +58,30 @@ transferRouter.post('/issue', async (req, res) => {
 	res.json({ ok: true })
 })
 
-// 2) Graduate's browser fetches by token, then it's burned
-transferRouter.get('/claim/:token', (req, res) => {
+// 2) Graduate's browser signs a message to prove ownership, then claims
+transferRouter.post('/claim/:token', (req, res) => {
+	const { address, signature } = req.body
+	
+	if (!address || !signature) {
+		return res.status(400).json({ error: 'address and signature are required' })
+	}
+	
 	const item = pending.get(req.params.token)
-	if (!item || Date.now() > item.expires) return res.status(404).json({ error: 'invalid or expired' })
+	if (!item || Date.now() > item.expires) {
+		return res.status(404).json({ error: 'invalid or expired' })
+	}
+	
+	const message = `Claim credential for token: ${req.params.token}`
+	const recovered = ethers.verifyMessage(message, signature)
+	
+	if (recovered.toLowerCase() !== address.toLowerCase()) {
+		return res.status(401).json({ error: 'signature does not match provided address' })
+	}
+	
+	if (recovered.toLowerCase() !== item.credential.graduate?.toLowerCase()) {
+		return res.status(403).json({ error: 'this credential is not for this wallet' })
+	}
+	
 	pending.delete(req.params.token) // single-use pickup
 	res.json({ credential: item.credential, signature: item.signature })
 })
