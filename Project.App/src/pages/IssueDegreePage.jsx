@@ -119,7 +119,20 @@ export function IssueDegreePage() {
     return (
       <section>
         {header}
-        <Gate message={wrongNetwork ? 'Connect to the correct network to issue degrees.' : 'Registry not configured.'} />
+        <div className="card mt-6 text-center">
+          <p className="text-sm text-zinc-400">
+            {wrongNetwork ? 'Connect to the correct network to issue degrees.' : 'Registry not configured.'}
+          </p>
+          {wrongNetwork && (
+            <button
+              type="button"
+              className="btn-primary mt-4"
+              onClick={() => wallet.switchNetwork(Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337))}
+            >
+              Switch Network
+            </button>
+          )}
+        </div>
       </section>
     )
   }

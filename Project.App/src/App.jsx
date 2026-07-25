@@ -38,8 +38,8 @@ function App() {
 					<Route path="/registry" element={<RegistryPage />} />
 					<Route path="/issue-degree" element={<IssueDegreePage />} />
 					<Route path="/verify" element={<VerifyPage />} />
-					<Route path='/poc' element={<PocPage />} />
-					<Route path='/transfer' element={<ClaimPage />} />
+				<Route path='/poc' element={<PocPage />} />
+				<Route path='/claim' element={<ClaimPage />} />
 				</Routes>
 			</main>
 		</div>
