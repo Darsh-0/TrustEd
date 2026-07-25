@@ -125,7 +125,7 @@ authRouter.post("/present", (req, res) => {
     expires: Date.now() + SHARE_TTL_MS,
   });
   res.json({
-    shareUrl: `https://web3-hackathon-8kad.vercel.app/verify?token=${token}`,
+    shareUrl: `${process.env.APP_BASE_URL}/verify?token=${token}`,
   });
 });
 
