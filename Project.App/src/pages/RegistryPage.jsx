@@ -13,7 +13,7 @@ export function RegistryPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-2xl font-semibold text-white">
-            Accredited universities
+            Accredited Educators
           </h2>
           <p className="mt-1 text-sm text-zinc-400">
             Voted in by the Ministry DAO and read straight from the chain.
