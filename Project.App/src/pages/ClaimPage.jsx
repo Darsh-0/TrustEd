@@ -4,17 +4,21 @@ import { saveCredential } from '../lib/store'
 const API = import.meta.env.VITE_API_URL
 
 export default function ClaimPage() {
-	const [status, setStatus] = useState('loading')
+	const [status, setStatus] = useState(() => {
+		const token = new URLSearchParams(window.location.search).get('token')
+		return token ? 'loading' : 'no token'
+	})
 
 	useEffect(() => {
+		if (status !== 'loading') return
+
 		const token = new URLSearchParams(window.location.search).get('token')
-		if (!token) { setStatus('no token'); return }
 
 		fetch(`${API}/claim/${token}`)
 			.then(r => r.ok ? r.json() : Promise.reject('invalid or expired link'))
 			.then(async (bundle) => { await saveCredential(bundle); setStatus('saved') })
 			.catch((e) => setStatus(String(e)))
-	}, [])
+	}, [status])
 
 	return (
 		<div style={{ padding: 32 }}>

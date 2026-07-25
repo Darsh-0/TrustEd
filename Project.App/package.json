@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@tailwindcss/vite": "^4.3.3",
 		"ethers": "^6.17.0",
+		"idb": "^8.0.3",
 		"react": "^19.2.7",
 		"react-dom": "^19.2.7",
 		"react-router-dom": "^7.18.1",
