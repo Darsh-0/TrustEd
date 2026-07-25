@@ -20,6 +20,7 @@ function truncateAddress(address) {
 }
 
 const DISCONNECT_KEY = 'degree:walletDisconnected'
+const EXPECTED_CHAIN_ID = Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337)
 
 export function WalletProvider({ children }) {
   const [address, setAddress] = useState(null)
@@ -50,6 +51,26 @@ export function WalletProvider({ children }) {
       setAddress(accounts[0])
       setChainId(Number(network.chainId))
       localStorage.removeItem(DISCONNECT_KEY)
+      if (Number(network.chainId) !== EXPECTED_CHAIN_ID) {
+        try {
+          await window.ethereum.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}` }],
+          })
+        } catch (switchErr) {
+          if (switchErr.code === 4902) {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [{
+                chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}`,
+                chainName: 'Local',
+                rpcUrls: ['http://127.0.0.1:8545'],
+                nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+              }],
+            })
+          }
+        }
+      }
     } catch (err) {
       setError(err.code === 4001 ? 'Connection rejected.' : err.message)
     } finally {
