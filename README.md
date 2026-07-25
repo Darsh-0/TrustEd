@@ -11,7 +11,7 @@
 ![ESLint](https://img.shields.io/badge/ESLint-10.6-4B32C3?logo=eslint&logoColor=white)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8-363636?logo=solidity&logoColor=white)
 ![Foundry](https://img.shields.io/badge/Foundry-Forge-B92122?logo=ethereum&logoColor=white)
-![Remix](https://img.shields.io/badge/Remix-1C1C1C?logo=ethereum&logoColor=white)(https://remix.ethereum.org/)
+[![Remix](https://img.shields.io/badge/Remix-1C1C1C?logo=ethereum&logoColor=white)](https://remix.ethereum.org/)
 
 # TrustEd: A decentralized, DAO-verified credential registry that proves your degree is real without exposing your data.
 
