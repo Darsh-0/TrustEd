@@ -2,7 +2,6 @@
    components/utilities layers (e.g. from index.css: @import "./theme.css";) */
 
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&family=Work+Sans:wght@400;500&family=Hanken+Grotesk:wght@500;600&display=swap");
-
 @import "tailwindcss";
 
 @theme {
@@ -49,23 +48,23 @@ body {
 
 @layer components {
   .card {
-    @apply rounded-lg border p-6;
+    @apply rounded-lg border border-surface-container-highest p-6;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-label text-sm font-semibold text-on-primary transition-colors hover:bg-primary-container disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 font-label text-sm font-semibold text-on-primary transition-colors hover:bg-primary-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-md border border-primary px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center rounded-md border border-primary px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-60;
   }
 
   .btn-primary-inverse {
-    @apply inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-white/90;
+    @apply inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-label text-sm font-semibold text-primary transition-colors hover:bg-white/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
   }
 
   .btn-outline-inverse {
-    @apply inline-flex items-center justify-center rounded-md border border-white/70 px-6 py-3 font-label text-sm font-semibold text-white transition-colors hover:bg-white/10;
+    @apply inline-flex items-center justify-center rounded-md border border-white/70 px-6 py-3 font-label text-sm font-semibold text-white transition-colors hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
   }
 
   .input {
@@ -74,5 +73,13 @@ body {
 
   .label {
     @apply mb-1 block font-label text-xs font-semibold uppercase tracking-wide text-on-surface-variant;
+  }
+
+  .nav-link {
+    @apply rounded-sm font-label text-sm font-semibold tracking-wide text-on-surface-variant transition-colors hover:text-on-surface focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary;
+  }
+
+  .nav-link-active {
+    @apply text-on-surface underline decoration-2 underline-offset-8;
   }
 }
