@@ -17,12 +17,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Hardhat
-**/artifacts/
-**/cache/
-**/ignition/deployments/
-**/coverage/
-
 # Vite
 **/.vite/
 

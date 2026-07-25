@@ -7,15 +7,6 @@
 # pnpm deploy output
 /bundle
 
-# Hardhat Build Artifacts
-/artifacts
-
-# Hardhat compilation (v2) support directory
-/cache
-
-# Hardhat Ignition deployment state (local deployments)
-/ignition/deployments
-
 # Typechain output
 /types
 
@@ -23,12 +14,3 @@
 .env
 .env.*
 !.env.example
-
-# Hardhat coverage reports
-/coverage
-
-# Gas snapshot files
-/.gas-snapshot
-
-# Snapshot cheatcodes output
-/snapshots

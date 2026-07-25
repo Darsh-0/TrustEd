@@ -1,19 +1,20 @@
-import { useWallet } from '../hooks/useWallet'
-import { useAccreditation } from '../hooks/useAccreditation'
-import { AccreditationStatus } from '../components/AccreditationStatus'
-import { UniversityTable } from '../components/UniversityTable'
+import { useWallet } from "../hooks/useWallet";
+import { useAccreditation } from "../hooks/useAccreditation";
+import { UniversityTable } from "../components/UniversityTable";
 
 export function RegistryPage() {
-  const wallet = useWallet()
-  const { isConnected, networkName } = wallet
-  const { count, isAccredited, loading, error, notConfigured, wrongNetwork, universities } =
-    useAccreditation(wallet)
+  const wallet = useWallet();
+  const { address, networkName } = wallet;
+  const { count, loading, error, notConfigured, wrongNetwork, universities } =
+    useAccreditation(wallet);
 
   return (
     <section>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-semibold text-white">Accredited universities</h2>
+          <h2 className="text-2xl font-semibold text-white">
+            Accredited universities
+          </h2>
           <p className="mt-1 text-sm text-zinc-400">
             Voted in by the Ministry DAO and read straight from the chain.
           </p>
@@ -25,33 +26,33 @@ export function RegistryPage() {
 
       {wrongNetwork && (
         <div className="mt-6 rounded-xl border border-amber-900/60 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
-          Wrong network — you're on {networkName}. Switch to the network the DAO is deployed on
-          (chain 31337).
-          <button className="btn-outline ml-3 px-3! py-1!" onClick={() => wallet.switchNetwork(31337)}>
+          Wrong network — you're on {networkName}. Switch to the network the DAO
+          is deployed on (chain 31337).
+          <button
+            className="btn-outline ml-3 px-3! py-1!"
+            onClick={() => wallet.switchNetwork(31337)}
+          >
             Switch Network
           </button>
-        </div>
-      )}
-
-      {isConnected && !wrongNetwork && !notConfigured && (
-        <div className="mt-6">
-          <AccreditationStatus isAccredited={isAccredited} loading={loading} error={error} />
         </div>
       )}
 
       <div className="mt-6">
         {notConfigured ? (
           <div className="card text-center text-sm text-zinc-400">
-            DAO registry not configured — set VITE_UNIVERSITY_REGISTRY_ADDRESS in .env
+            DAO registry not configured — set VITE_UNIVERSITY_REGISTRY_ADDRESS
+            in .env
           </div>
         ) : error ? (
           <div className="card text-center text-sm text-red-400">{error}</div>
         ) : loading ? (
-          <div className="card text-center text-sm text-zinc-400">Loading the directory…</div>
+          <div className="card text-center text-sm text-zinc-400">
+            Loading the directory…
+          </div>
         ) : (
-          <UniversityTable universities={universities} />
+          <UniversityTable universities={universities} address={address} />
         )}
       </div>
     </section>
-  )
+  );
 }
