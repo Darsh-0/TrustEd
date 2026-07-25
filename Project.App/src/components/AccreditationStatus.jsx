@@ -1,8 +1,8 @@
-export function EducatorStatus({ isEducator, loading, error }) {
+export function AccreditationStatus({ isAccredited, loading, error }) {
   if (loading) {
     return (
       <div className="p-4 bg-gray-100 rounded-lg">
-        <span className="text-gray-600">Checking educator status...</span>
+        <span className="text-gray-600">Checking accreditation...</span>
       </div>
     );
   }
@@ -15,17 +15,17 @@ export function EducatorStatus({ isEducator, loading, error }) {
     );
   }
 
-  if (isEducator) {
+  if (isAccredited) {
     return (
       <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-        <span className="text-green-700 font-medium">✓ Verified Educator</span>
+        <span className="text-green-700 font-medium">✓ DAO-accredited university</span>
       </div>
     );
   }
 
   return (
     <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-      <span className="text-yellow-700">Not authorized as educator</span>
+      <span className="text-yellow-700">This address is not an accredited university</span>
     </div>
   );
 }

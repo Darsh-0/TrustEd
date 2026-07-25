@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { isAddress } from 'ethers'
 import { useWallet } from '../hooks/useWallet'
-import { useRegistry } from '../hooks/useRegistry'
+import { useAccreditation } from '../hooks/useAccreditation'
 
 export function IssueDegreePage() {
   const wallet = useWallet()
   const { isConnected, networkName, truncatedAddress } = wallet
-  const registry = useRegistry(wallet)
-  const { isEducator, loading, wrongNetwork, notConfigured } = registry
+  const { isAccredited, loading, wrongNetwork, notConfigured } = useAccreditation(wallet)
 
   const [graduateAddress, setGraduateAddress] = useState('')
   const [degreeName, setDegreeName] = useState('')
@@ -72,7 +71,7 @@ export function IssueDegreePage() {
         <div className="registry-gate">
           {wrongNetwork
             ? 'Connect to the correct network to issue degrees.'
-            : 'Registry not configured.'}
+            : 'DAO registry not configured.'}
         </div>
       </section>
     )
@@ -90,7 +89,7 @@ export function IssueDegreePage() {
     )
   }
 
-  if (!isEducator) {
+  if (!isAccredited) {
     return (
       <section id="issue-degree">
         <div className="page-header">
@@ -98,7 +97,8 @@ export function IssueDegreePage() {
           <p className="page-sub">Issue academic credentials to graduates.</p>
         </div>
         <div className="registry-gate">
-          You must be a verified educator to issue degrees.
+          Only universities accredited by the DAO can issue degrees. This address is not
+          accredited.
         </div>
       </section>
     )
