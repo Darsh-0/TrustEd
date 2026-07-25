@@ -6,14 +6,14 @@ import { useAccreditation } from '../hooks/useAccreditation'
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 function Gate({ message }) {
-  return (
-    <div className="card mt-6 text-center text-sm text-neutral-500">{message}</div>
-  )
+	return (
+		<div className="card mt-6 text-center text-sm text-neutral-500">{message}</div>
+	)
 }
 
 export function IssueDegreePage() {
 	const wallet = useWallet()
-	const { isConnected, networkName, truncatedAddress } = wallet
+	const { isConnected, truncatedAddress } = wallet
 	const { isAccredited, loading, wrongNetwork, notConfigured } = useAccreditation(wallet)
 
 	const [graduateAddress, setGraduateAddress] = useState('')
@@ -95,68 +95,68 @@ export function IssueDegreePage() {
 		}
 	}
 
-  const header = (
-    <div>
-      <h2 className="text-2xl font-bold text-neutral-900">Issue Degree</h2>
-      <p className="mt-1 text-sm text-neutral-500">
-        Issue academic credentials to graduates.
-        {isConnected && ` Connected as: ${truncatedAddress} (${networkName})`}
-      </p>
-    </div>
-  )
+	const header = (
+		<div>
+			<h2 className="text-2xl font-bold text-neutral-900">Issue Degree</h2>
+			<p className="mt-1 text-sm text-neutral-500">
+				Issue academic credentials to graduates.
+				{isConnected && ` Connected as: ${truncatedAddress}`}
+			</p>
+		</div>
+	)
 
-  if (!isConnected) {
-    return (
-      <section className="mx-auto max-w-5xl px-6 py-12">
-        {header}
-        <Gate message="Connect your wallet to access degree issuance." />
-      </section>
-    )
-  }
+	if (!isConnected) {
+		return (
+			<section className="mx-auto max-w-5xl px-6 py-12">
+				{header}
+				<Gate message="Connect your wallet to access degree issuance." />
+			</section>
+		)
+	}
 
-  if (wrongNetwork || notConfigured) {
-    return (
-      <section className="mx-auto max-w-5xl px-6 py-12">
-        {header}
-        <div className="card mt-6 text-center">
-          <p className="text-sm text-neutral-500">
-            {wrongNetwork ? 'Connect to the correct network to issue degrees.' : 'Registry not configured.'}
-          </p>
-          {wrongNetwork && (
-            <button
-              type="button"
-              className="btn-primary mt-4"
-              onClick={() => wallet.switchNetwork(Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337))}
-            >
-              Switch Network
-            </button>
-          )}
-        </div>
-      </section>
-    )
-  }
+	if (wrongNetwork || notConfigured) {
+		return (
+			<section className="mx-auto max-w-5xl px-6 py-12">
+				{header}
+				<div className="card mt-6 text-center">
+					<p className="text-sm text-neutral-500">
+						{wrongNetwork ? 'Connect to the correct network to issue degrees.' : 'Registry not configured.'}
+					</p>
+					{wrongNetwork && (
+						<button
+							type="button"
+							className="btn-primary mt-4"
+							onClick={() => wallet.switchNetwork(Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337))}
+						>
+							Switch Network
+						</button>
+					)}
+				</div>
+			</section>
+		)
+	}
 
-  if (loading) {
-    return (
-      <section className="mx-auto max-w-5xl px-6 py-12">
-        {header}
-        <Gate message="Loading..." />
-      </section>
-    )
-  }
+	if (loading) {
+		return (
+			<section className="mx-auto max-w-5xl px-6 py-12">
+				{header}
+				<Gate message="Loading..." />
+			</section>
+		)
+	}
 
-  if (!isAccredited) {
-    return (
-      <section className="mx-auto max-w-5xl px-6 py-12">
-        {header}
-        <Gate message="You must be an accredited university to issue degrees." />
-      </section>
-    )
-  }
+	if (!isAccredited) {
+		return (
+			<section className="mx-auto max-w-5xl px-6 py-12">
+				{header}
+				<Gate message="You must be an accredited university to issue degrees." />
+			</section>
+		)
+	}
 
-  return (
-    <section className="mx-auto max-w-lg px-6 py-12">
-      {header}
+	return (
+		<section className="mx-auto max-w-lg px-6 py-12">
+			{header}
 
 			<form onSubmit={handleSubmit} className="card mt-6 space-y-4">
 				<div>
@@ -223,17 +223,17 @@ export function IssueDegreePage() {
 					/>
 				</div>
 
-        {formError && (
-          <p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
-            {formError}
-          </p>
-        )}
+				{formError && (
+					<p className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+						{formError}
+					</p>
+				)}
 
-        {success && (
-          <p className="rounded-lg border border-[#17463C]/20 bg-[#17463C]/5 px-3 py-2 text-sm text-[#17463C]">
-            Degree issued successfully!
-          </p>
-        )}
+				{success && (
+					<p className="rounded-lg border border-[#17463C]/20 bg-[#17463C]/5 px-3 py-2 text-sm text-[#17463C]">
+						Degree issued successfully!
+					</p>
+				)}
 
 				<button type="submit" className="btn-primary w-full" disabled={submitting}>
 					{submitting ? 'Signing & Sending...' : 'Issue Degree'}
