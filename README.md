@@ -1,8 +1,21 @@
-# TrustEd: A decentralized, DAO-verified credential registry that proves your degree is real without exposing your data.  
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Express_5-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.2-000000?logo=express&logoColor=white)
+![Ethers.js](https://img.shields.io/badge/Ethers.js-6.17-2535A0?logo=ethers&logoColor=white)
+![Resend](https://img.shields.io/badge/Resend-6.18-000000?logo=resend&logoColor=white)
+![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)
+![React Router](https://img.shields.io/badge/React_Router-7.18-CA4245?logo=reactrouter&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.3-06B6D4?logo=tailwindcss&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-8.1-646CFF?logo=vite&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-10.6-4B32C3?logo=eslint&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-0.8-363636?logo=solidity&logoColor=white)
+![Foundry](https://img.shields.io/badge/Foundry-Forge-B92122?logo=ethereum&logoColor=white)
+
+# TrustEd: A decentralized, DAO-verified credential registry that proves your degree is real without exposing your data.
 
 <img width="1536" height="371" alt="TrustEd_Logo" src="https://github.com/user-attachments/assets/5c236578-1c25-43dd-bc79-dbc9c03ec74c" />
 
-## Description:
+## Description
 
 A decentralized, privacy-preserving credential verification platform; built for graduates, universities, and employers. Solving degree fraud globally and privately, starting with New Zealand.
 
@@ -12,7 +25,9 @@ Verifying a degree today means phone calls, emails, and trusting paperwork that 
 
 ### How it works:
 
-A DAO of accrediting bodies (e.g. ministries of education across different countries) votes to approve legitimate universities, creating a public, tamper-proof on-chain registry of trusted issuers. Approved universities issue degree credentials directly to a graduate's wallet, but only a cryptographic hash of the credential is stored on-chain; the actual degree details stay private, shared only between the university and the graduate. When an employer needs proof of qualification, the graduate shares their credential directly; the employer verifies it in seconds by checking the issuer against the DAO registry and matching the hash on-chain, with no calls, no paperwork, and no unnecessary personal data exposed. Our solution encapsulates this in a minimalistic application that’s easy to use for all end users.
+A DAO of accrediting bodies (e.g. ministries of education across different countries) votes to approve legitimate universities, creating a public, tamper-proof on-chain registry of trusted issuers. Approved universities issue degree credentials directly to a graduate's wallet, but only a cryptographic hash of the credential is stored on-chain; the actual degree details stay private, shared only between the university and the graduate. When an employer needs proof of qualification, the graduate shares their credential directly; the employer verifies it in seconds by checking the issuer against the DAO registry and matching the hash on-chain, with no calls, no paperwork, and no unnecessary personal data exposed.
+
+Our solution encapsulates this in a minimalistic application that’s easy to use for all end users.
 
 ### What’s next:
 
@@ -84,12 +99,50 @@ role from a dropdown. It also ships its own richer seed (`npm run smoke` in
 `university-dao-tool/`), which sets up an accredited university, a staged key rotation, and a
 live proposal in one go.
 
+## Project Structure
+
+```
+TrustEd/
+├── common.sh                  # Shared shell helpers for local scripts
+├── start-all.sh               # Starts the full stack
+├── seed-demo.sh               # Seeds the demo registry through the DAO flow
+├── Project.Api/               # Express + ethers API for registry reads and credential routes
+│   ├── src/
+│   │   ├── index.ts           # API entry point and server bootstrap
+│   │   ├── dao.ts             # DAO and registry access helpers
+│   │   └── routes/
+│   │       ├── auth.ts        # Authentication and wallet/session routes
+│   │       └── transfer.ts    # Credential issue and claim routes
+│   ├── artifacts/             # Solidity build artifacts consumed by the API
+│   │   ├── build-info/        # Solc build metadata
+│   │   └── contracts/         # Per-contract JSON artifacts
+│   └── package.json           # API package manifest and scripts
+├── Project.App/               # React + Vite credential directory and claim experience
+│   ├── src/
+│   │   ├── App.jsx            # Application shell and routing
+│   │   ├── main.jsx           # Front-end bootstrap
+│   │   ├── components/        # Shared UI pieces
+│   │   ├── context/           # Wallet context and provider wiring
+│   │   ├── hooks/             # Reusable React hooks
+│   │   ├── lib/               # Client-side utilities and storage helpers
+│   │   └── pages/             # Route-level screens
+│   ├── public/                # Static assets served by Vite
+│   └── package.json           # App package manifest and scripts
+├── university-dao/            # Foundry workspace for governance and registry contracts
+│   ├── src/                   # Solidity contracts for accreditation and registry logic
+│   ├── script/                # Deployment and demo scripts
+│   ├── deployments/           # Recorded deployment addresses and chain state
+│   ├── lib/                   # Vendored Foundry dependencies
+│   └── foundry.toml           # Foundry configuration
+```
+
 ## Authors and Acknowledgments
-- Darsh
-- Ed
-- Reuben
-- Siegfried
-- Sienna
-- Vlad
+
+- [Darsh](https://github.com/Darsh-0)
+- [Ed](https://github.com/Ed-Leonard)
+- [Reuben](https://github.com/RJDonnison)
+- [Siegfried](https://github.com/walkingAroundsoMuch)
+- [Sienna](https://github.com/itzsiennaduh)
+- [Vlad](https://github.com/nistorv)
 
 A big thank you to the sponsors and organisers of the 2026 Christchurch Web3Hackathon for making this possible.
