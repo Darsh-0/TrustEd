@@ -19,6 +19,7 @@ function truncateAddress(address) {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
+const RPC_URL = import.meta.env.VITE_RPC_URL ?? 'http://127.0.0.1:8545'
 const DISCONNECT_KEY = 'degree:walletDisconnected'
 const EXPECTED_CHAIN_ID = Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337)
 
@@ -64,7 +65,7 @@ export function WalletProvider({ children }) {
               params: [{
                 chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}`,
                 chainName: 'Local',
-                rpcUrls: ['http://127.0.0.1:8545'],
+                rpcUrls: [RPC_URL],
                 nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
               }],
             })
@@ -146,7 +147,7 @@ export function WalletProvider({ children }) {
                 params: [{
                   chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}`,
                   chainName: 'Local',
-                  rpcUrls: ['http://127.0.0.1:8545'],
+                  rpcUrls: [RPC_URL],
                   nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
                 }],
               })
@@ -182,7 +183,7 @@ export function WalletProvider({ children }) {
               params: [{
                 chainId: `0x${EXPECTED_CHAIN_ID.toString(16)}`,
                 chainName: 'Local',
-                rpcUrls: ['http://127.0.0.1:8545'],
+                rpcUrls: [RPC_URL],
                 nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
               }],
             })
