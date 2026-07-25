@@ -1,4 +1,24 @@
-# Web3 Hackathon — DAO-accredited academic credentials
+# TrustEd: A decentralized, DAO-verified credential registry that proves your degree is real without exposing your data.  
+
+<img width="1536" height="371" alt="TrustEd_Logo" src="https://github.com/user-attachments/assets/5c236578-1c25-43dd-bc79-dbc9c03ec74c" />
+
+## Description:
+
+A decentralized, privacy-preserving credential verification platform; built for graduates, universities, and employers. Solving degree fraud globally and privately, starting with New Zealand.
+
+### What problem does it solve:
+
+Verifying a degree today means phone calls, emails, and trusting paperwork that can be forged. Fake credentials aren't just an HR problem, they put patients under unqualified doctors and sensitive systems in the hands of unverified staff. Our project fixes this by removing the need for a single trusted authority to vouch for anything.
+
+### How it works:
+
+A DAO of accrediting bodies (e.g. ministries of education across different countries) votes to approve legitimate universities, creating a public, tamper-proof on-chain registry of trusted issuers. Approved universities issue degree credentials directly to a graduate's wallet, but only a cryptographic hash of the credential is stored on-chain; the actual degree details stay private, shared only between the university and the graduate. When an employer needs proof of qualification, the graduate shares their credential directly; the employer verifies it in seconds by checking the issuer against the DAO registry and matching the hash on-chain, with no calls, no paperwork, and no unnecessary personal data exposed. Our solution encapsulates this in a minimalistic application that’s easy to use for all end users.
+
+### What’s next:
+
+We want to extend the same framework beyond degrees to other credentials; citizenship, age verification, professional licenses, turning this into a general-purpose foundation for trustworthy, truly private, digital identity in New Zealand and internationally.
+
+## Architecture
 
 Four pieces:
 
@@ -63,3 +83,13 @@ The DAO tool needs no wallet at all — it signs with anvil's dev keys and lets 
 role from a dropdown. It also ships its own richer seed (`npm run smoke` in
 `university-dao-tool/`), which sets up an accredited university, a staged key rotation, and a
 live proposal in one go.
+
+## Authors and Acknowledgments
+- Darsh
+- Ed
+- Reuben
+- Siegfried
+- Sienna
+- Vlad
+
+A big thank you to the sponsors and organisers of the 2026 Christchurch Web3Hackathon for making this possible.
