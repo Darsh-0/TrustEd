@@ -7,123 +7,73 @@ import { RegistryTable } from '../components/RegistryTable'
 
 export function RegistryPage() {
   const wallet = useWallet()
-  const { isConnected, networkName, truncatedAddress } = wallet
+  const { isConnected, networkName } = wallet
   const registry = useRegistry(wallet)
   const { count, isEducator, isOwner, loading, error, txPending, notConfigured, wrongNetwork, educators, addEducator, removeEducator } = registry
 
   const [showAddForm, setShowAddForm] = useState(false)
 
   return (
-    <>
-      <section id="hero">
-        <div className="hero-left">
-          <p className="hero-eyebrow">On-chain · Credentials · Trust</p>
-          <h1>
-            Verified
-            <br />
-            Educator
-            <br />
-            Registry
-          </h1>
-          <p className="hero-sub">
-            A permanent on-chain registry of trusted educational institutions.
-            Issue and verify academic credentials anyone can check.
-          </p>
+    <section>
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-semibold text-white">Accredited Educators</h2>
+          <p className="mt-1 text-sm text-zinc-400">{count} registered issuers</p>
         </div>
-
-        <div className="hero-right">
-          {isConnected ? (
-            <div className="conn-card">
-              <div className="conn-card-head">
-                <span className="live-dot" />
-                <span className="conn-label">Connected</span>
-              </div>
-              <div className="conn-address">{truncatedAddress}</div>
-              <span className="conn-network">{networkName}</span>
-              <div className="conn-divider" />
-              <div className="conn-stats">
-                <div className="conn-stat">
-                  <span className="conn-stat-val">{count}</span>
-                  <span className="conn-stat-key">Issuers</span>
-                </div>
-                <div className="conn-stat">
-                  <span className="conn-stat-val">{count}</span>
-                  <span className="conn-stat-key">Active</span>
-                </div>
-              </div>
-              <EducatorStatus isEducator={isEducator} loading={loading} error={error} />
-              <button className="btn-disconnect" onClick={wallet.disconnect}>
-                Disconnect
-              </button>
-            </div>
-          ) : (
-            <p className="hero-prompt">
-              Connect your wallet above to interact with the registry.
-            </p>
-          )}
-        </div>
-      </section>
+        {isConnected && isOwner && !wrongNetwork && (
+          <button className="btn-primary" onClick={() => setShowAddForm(!showAddForm)}>
+            {showAddForm ? 'Cancel' : '+ Add Issuer'}
+          </button>
+        )}
+      </div>
 
       {wrongNetwork && (
-        <div className="network-banner">
-          Wrong network — you're on {networkName}. Please switch to the local Hardhat network (chain 31337).
-          <button className="btn-switch-network" onClick={() => wallet.switchNetwork(31337)}>
+        <div className="mt-6 flex items-center justify-between rounded-xl border border-amber-900/60 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
+          <span>
+            Wrong network — you're on {networkName}. Switch to the local Hardhat network (chain 31337).
+          </span>
+          <button className="btn-outline ml-4 shrink-0" onClick={() => wallet.switchNetwork(31337)}>
             Switch Network
           </button>
         </div>
       )}
 
       {notConfigured && (
-        <div className="network-banner">
+        <div className="mt-6 rounded-xl border border-amber-900/60 bg-amber-950/40 px-4 py-3 text-sm text-amber-400">
           Registry not configured — set VITE_REGISTRY_ADDRESS in .env
         </div>
       )}
 
-      <section id="registry">
-        <div className="registry-bar">
-          <div className="bar-left">
-            <span className="bar-title">Issuer Directory</span>
-            <span className="bar-count">{count} registered</span>
-          </div>
-          {isConnected && isOwner && !wrongNetwork && (
-            <button className="btn-add" onClick={() => setShowAddForm(!showAddForm)}>
-              {showAddForm ? 'Cancel' : '+ Add Issuer'}
-            </button>
-          )}
+      {isConnected && !wrongNetwork && !notConfigured && (
+        <div className="mt-6">
+          <EducatorStatus isEducator={isEducator} loading={loading} error={error} />
         </div>
+      )}
 
-        {showAddForm && isOwner && (
+      {showAddForm && isOwner && (
+        <div className="mt-6">
           <AddIssuerForm
             onAdd={addEducator}
             pending={txPending}
             onClose={() => setShowAddForm(false)}
           />
-        )}
+        </div>
+      )}
 
-        {isConnected && !wrongNetwork && !notConfigured ? (
-          <div className="registry-table">
-            <div className="table-head">
-              <span>Address</span>
-              <span>Name</span>
-              <span>Status</span>
-              <span>Registered</span>
-              <span>Actions</span>
-            </div>
-            <RegistryTable
-              educators={educators}
-              isOwner={isOwner}
-              onRemove={removeEducator}
-              pending={txPending}
-            />
-          </div>
+      <div className="mt-6">
+        {!notConfigured ? (
+          <RegistryTable
+            educators={educators}
+            isOwner={isOwner}
+            onRemove={removeEducator}
+            pending={txPending}
+          />
         ) : (
-          <div className="registry-gate">
-            {isConnected
-              ? 'Connect to the correct network to view the directory.'
-              : 'Connect your wallet to view the issuer directory.'}
+          <div className="card text-center text-sm text-zinc-400">
+            Registry not configured.
           </div>
         )}
-      </section>
-    </>
+      </div>
+    </section>
   )
 }
