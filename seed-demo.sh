@@ -9,7 +9,7 @@
 # end up accredited because the DAO voted them in.
 #
 # Uses anvil's default accounts: #1-#5 are the founding ministries, #6-#8 stand
-# in for universities. Run ./1-start-chain.sh first.
+# in for universities. Run ./start-all.sh first.
 #
 set -euo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"

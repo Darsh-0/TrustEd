@@ -65,13 +65,13 @@ export default function ClaimPage() {
 		return (
 			<section className="flex min-h-[70vh] items-center justify-center px-6">
 				<div className="card w-full max-w-lg text-center">
-					<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-						<svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-error-container">
+						<svg className="h-6 w-6 text-on-error-container" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</div>
-					<h2 className="text-lg font-bold text-neutral-900">Invalid Link</h2>
-					<p className="mt-2 text-sm text-neutral-500">{error}</p>
+					<h2 className="font-headline text-lg font-bold text-on-surface">Invalid Link</h2>
+					<p className="mt-2 text-sm text-on-surface-variant">{error}</p>
 				</div>
 			</section>
 		)
@@ -81,8 +81,8 @@ export default function ClaimPage() {
 		return (
 			<section className="flex min-h-[70vh] items-center justify-center px-6">
 				<div className="card w-full max-w-lg text-center">
-					<h2 className="text-lg font-bold text-neutral-900">Claim Your Credential</h2>
-					<p className="mt-2 text-sm text-neutral-500">
+					<h2 className="font-headline text-lg font-bold text-on-surface">Claim Your Credential</h2>
+					<p className="mt-2 text-sm text-on-surface-variant">
 						Connect your wallet to verify ownership and claim your degree.
 					</p>
 				</div>
@@ -94,8 +94,8 @@ export default function ClaimPage() {
 		return (
 			<section className="flex min-h-[70vh] items-center justify-center px-6">
 				<div className="card w-full max-w-lg text-center">
-					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#17463C]" />
-					<p className="text-sm text-neutral-500">Claiming your credential...</p>
+					<div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-surface-container-highest border-t-primary" />
+					<p className="text-sm text-on-surface-variant">Claiming your credential...</p>
 				</div>
 			</section>
 		)
@@ -105,13 +105,13 @@ export default function ClaimPage() {
 		return (
 			<section className="flex min-h-[70vh] items-center justify-center px-6">
 				<div className="card w-full max-w-lg text-center">
-					<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-						<svg className="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-error-container">
+						<svg className="h-6 w-6 text-on-error-container" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
 						</svg>
 					</div>
-					<h2 className="text-lg font-bold text-neutral-900">Claim Failed</h2>
-					<p className="mt-2 text-sm text-red-600">{error}</p>
+					<h2 className="font-headline text-lg font-bold text-on-surface">Claim Failed</h2>
+					<p className="mt-2 text-sm text-on-error-container">{error}</p>
 					<button onClick={handleClaim} className="btn-primary mt-4">
 						Try Again
 					</button>
@@ -125,33 +125,33 @@ export default function ClaimPage() {
 			<section className="flex min-h-[70vh] items-center justify-center px-6">
 				<div className="card w-full max-w-lg">
 					<div className="text-center">
-						<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#17463C]/10">
-							<svg className="h-6 w-6 text-[#17463C]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary-container/10">
+							<svg className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
 							</svg>
 						</div>
-						<h2 className="text-lg font-bold text-neutral-900">Credential Claimed!</h2>
-						<p className="mt-1 text-sm text-neutral-500">Your degree has been saved to this device.</p>
+						<h2 className="font-headline text-lg font-bold text-on-surface">Credential Claimed!</h2>
+						<p className="mt-1 text-sm text-on-surface-variant">Your degree has been saved to this device.</p>
 					</div>
 
 					{credential && (
-						<div className="mt-6 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
+						<div className="mt-6 rounded-lg border border-surface-container-highest bg-surface-container-low p-4">
 							<dl className="space-y-3 text-sm">
 								<div>
-									<dt className="text-neutral-500">Degree</dt>
-									<dd className="font-medium text-neutral-900">{credential.degreeName}</dd>
+									<dt className="text-on-surface-variant">Degree</dt>
+									<dd className="font-medium text-on-surface">{credential.degreeName}</dd>
 								</div>
 								<div>
-									<dt className="text-neutral-500">Field of Study</dt>
-									<dd className="font-medium text-neutral-900">{credential.fieldOfStudy}</dd>
+									<dt className="text-on-surface-variant">Field of Study</dt>
+									<dd className="font-medium text-on-surface">{credential.fieldOfStudy}</dd>
 								</div>
 								<div>
-									<dt className="text-neutral-500">Graduation Date</dt>
-									<dd className="font-medium text-neutral-900">{credential.graduationDate}</dd>
+									<dt className="text-on-surface-variant">Graduation Date</dt>
+									<dd className="font-medium text-on-surface">{credential.graduationDate}</dd>
 								</div>
 								<div>
-									<dt className="text-neutral-500">Issued By</dt>
-									<dd className="font-mono text-xs text-neutral-700">{credential.issuer}</dd>
+									<dt className="text-on-surface-variant">Issued By</dt>
+									<dd className="font-mono text-xs text-on-surface-variant">{credential.issuer}</dd>
 								</div>
 							</dl>
 						</div>
@@ -164,8 +164,8 @@ export default function ClaimPage() {
 	return (
 		<section className="flex min-h-[70vh] items-center justify-center px-6">
 			<div className="card w-full max-w-lg text-center">
-				<h2 className="text-lg font-bold text-neutral-900">Claim Your Credential</h2>
-				<p className="mt-2 text-sm text-neutral-500">
+				<h2 className="font-headline text-lg font-bold text-on-surface">Claim Your Credential</h2>
+				<p className="mt-2 text-sm text-on-surface-variant">
 					Sign a message to prove you own this wallet, then claim your degree.
 				</p>
 				<button onClick={handleClaim} className="btn-primary mt-4">
