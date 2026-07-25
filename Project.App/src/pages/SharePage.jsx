@@ -16,27 +16,51 @@ export default function SharePage() {
 	}
 
 	return (
-		<div style={{ padding: 32, maxWidth: 520 }}>
-			<h2>Your credentials</h2>
-			{creds.length === 0 && <p>No credentials stored on this device.</p>}
-			{creds.map(c => {
-				const cred = c.credential ?? c
-				return (
-					<div key={cred.id} style={{ border: '1px solid #ccc', padding: 12, marginBottom: 8 }}>
-						<strong>{cred.claim}</strong>
-						<button onClick={() => share(cred.id)} style={{ marginLeft: 12 }}>
-							Share with employer
-						</button>
-					</div>
-				)
-			})}
-			{link && (
-				<div style={{ marginTop: 16 }}>
-					<p>Send this link to the employer:</p>
-					<input readOnly value={link} style={{ width: '100%' }} onFocus={e => e.target.select()} />
+		<section className="mx-auto max-w-lg px-6 py-12">
+			<h2 className="text-2xl font-bold text-neutral-900">Your credentials</h2>
+			<p className="mt-1 text-sm text-neutral-500">
+				Share verified degrees with employers via a one-time link.
+			</p>
+
+			{creds.length === 0 && (
+				<div className="card mt-6 text-center text-sm text-neutral-500">
+					No credentials stored on this device.
 				</div>
 			)}
-			{error && <p style={{ color: 'crimson' }}>{error}</p>}
-		</div>
+
+			{creds.length > 0 && (
+				<div className="mt-6 space-y-3">
+					{creds.map(c => {
+						const cred = c.credential ?? c
+						return (
+							<div key={cred.id} className="card flex items-center justify-between gap-4">
+								<span className="font-medium text-neutral-900">{cred.claim ?? cred.degreeName ?? 'Credential'}</span>
+								<button onClick={() => share(cred.id)} className="btn-outline">
+									Share with employer
+								</button>
+							</div>
+						)
+					})}
+				</div>
+			)}
+
+			{link && (
+				<div className="card mt-4">
+					<p className="mb-2 text-sm font-medium text-neutral-900">Send this link to the employer:</p>
+					<input
+						readOnly
+						value={link}
+						className="input"
+						onFocus={e => e.target.select()}
+					/>
+				</div>
+			)}
+
+			{error && (
+				<p className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
+					{error}
+				</p>
+			)}
+		</section>
 	)
 }

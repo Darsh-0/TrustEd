@@ -3,17 +3,21 @@ import { useEffect, useState } from 'react'
 const API = import.meta.env.VITE_API_URL
 
 export default function VerifyPage() {
-	const [result, setResult] = useState({ state: 'loading' })
+	const [result, setResult] = useState(() => {
+		const token = new URLSearchParams(window.location.search).get('token')
+		return token ? { state: 'loading' } : { state: 'error', reason: 'no token in link' }
+	})
 
 	useEffect(() => {
+		if (result.state !== 'loading') return
 		const token = new URLSearchParams(window.location.search).get('token')
-		if (!token) return setResult({ state: 'error', reason: 'no token in link' })
+		if (!token) return
 
 		fetch(`${API}/redeem/${token}`)
 			.then(r => r.json())
 			.then(data => setResult({ state: 'done', ...data }))
 			.catch(() => setResult({ state: 'error', reason: 'could not reach server' }))
-	}, [])
+	}, [result.state])
 
 	return (
 		<div className="flex min-h-[70vh] flex-col items-center justify-center px-6 text-center">
