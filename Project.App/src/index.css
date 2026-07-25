@@ -1,78 +1,23 @@
 @import "tailwindcss";
 
-:root {
-  --text: #6B7280;
-  --text-h: #F9FAFB;
-  --bg: #0F1117;
-  --border: #1F2937;
-  --surface: #1A1D27;
-  --surface2: #242836;
-  --accent: #84CC16;
-  --accent-bg: rgba(132, 204, 22, 0.08);
-  --accent-border: rgba(132, 204, 22, 0.24);
-  --shadow: rgba(0, 0, 0, 0.5) 0 8px 16px -4px, rgba(0, 0, 0, 0.3) 0 4px 8px -2px;
-  --radius: 12px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 16px/1.5 var(--sans);
-  letter-spacing: 0.01em;
-  color-scheme: dark light;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    --text: #6B7280;
-    --text-h: #111827;
-    --bg: #F9FAFB;
-    --border: #E5E7EB;
-    --surface: #FFFFFF;
-    --surface2: #F3F4F6;
-    --accent: #65A30D;
-    --accent-bg: rgba(101, 163, 13, 0.08);
-    --accent-border: rgba(101, 163, 13, 0.24);
-    --shadow: rgba(0, 0, 0, 0.08) 0 4px 12px -2px, rgba(0, 0, 0, 0.04) 0 2px 6px -1px;
-  }
-}
-
 body {
-  margin: 0;
+  @apply bg-zinc-950 text-zinc-300 antialiased;
 }
 
-#root {
-  width: 1200px;
-  max-width: 100%;
-  margin: 0 auto;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
-
-h1, h2, h3 {
-  font-family: var(--heading);
-  font-weight: 600;
-  color: var(--text-h);
-  margin: 0;
-}
-
-p {
-  margin: 0;
-}
-
-code {
-  font-family: var(--mono);
-  font-size: 14px;
-  padding: 2px 6px;
-  background: var(--surface2);
-  border-radius: 4px;
-  color: var(--text-h);
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-lime-400 px-5 py-2.5 text-sm font-medium text-zinc-950 transition hover:bg-lime-300 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-200 transition hover:border-zinc-500 hover:text-white;
+  }
+  .card {
+    @apply rounded-xl border border-zinc-800 bg-zinc-900 p-6;
+  }
+  .input {
+    @apply w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-500 outline-none focus:border-lime-400;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-medium uppercase tracking-wide text-zinc-400;
+  }
 }

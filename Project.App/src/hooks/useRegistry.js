@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { BrowserProvider, Contract, isAddress, ZeroAddress } from 'ethers'
+import { BrowserProvider, JsonRpcProvider, Contract, isAddress, ZeroAddress } from 'ethers'
 import IssuerRegistryABI from '../abi/IssuerRegistry.json'
 
 const REGISTRY_ADDRESS = import.meta.env.VITE_REGISTRY_ADDRESS
 const EXPECTED_CHAIN_ID = Number(import.meta.env.VITE_REGISTRY_CHAIN_ID ?? 31337)
+const RPC_URL = import.meta.env.VITE_RPC_URL ?? 'http://127.0.0.1:8545'
 
 function parseError(err) {
   return err?.shortMessage ?? err?.reason ?? err?.info?.error?.message ?? err?.message ?? 'Unknown error'
@@ -33,11 +34,12 @@ export function useRegistry(wallet) {
   const notConfigured = !REGISTRY_ADDRESS || REGISTRY_ADDRESS === ZeroAddress
   const wrongNetwork = isConnected && chainId !== EXPECTED_CHAIN_ID
 
+  // Public read provider — always available, no wallet needed
   const readContract = useMemo(() => {
-    if (notConfigured || wrongNetwork || !window.ethereum) return null
-    const provider = new BrowserProvider(window.ethereum)
+    if (notConfigured) return null
+    const provider = new JsonRpcProvider(RPC_URL)
     return new Contract(REGISTRY_ADDRESS, IssuerRegistryABI, provider)
-  }, [notConfigured, wrongNetwork])
+  }, [notConfigured])
 
   const writeContract = useCallback(async () => {
     if (notConfigured || wrongNetwork || !window.ethereum) return null
@@ -47,7 +49,7 @@ export function useRegistry(wallet) {
   }, [notConfigured, wrongNetwork])
 
   const refresh = useCallback(async () => {
-    if (!readContract || !isConnected) {
+    if (!readContract) {
       setEducators([])
       setOwner(null)
       setIsEducator(false)
@@ -59,10 +61,9 @@ export function useRegistry(wallet) {
     setError(null)
 
     try {
-      const [ownerAddr, allAddresses, eduStatus] = await Promise.all([
+      const [ownerAddr, allAddresses] = await Promise.all([
         readContract.owner(),
         readContract.getAllEducators(),
-        address ? readContract.isEducator(address) : Promise.resolve(false),
       ])
 
       if (cancelledRef.current !== id) return
@@ -78,7 +79,15 @@ export function useRegistry(wallet) {
 
       setOwner(ownerAddr)
       setEducators(details)
-      setIsEducator(eduStatus)
+
+      // Check if current user is educator (only when connected)
+      if (isConnected && address) {
+        const eduStatus = await readContract.isEducator(address)
+        if (cancelledRef.current !== id) return
+        setIsEducator(eduStatus)
+      } else {
+        setIsEducator(false)
+      }
     } catch (err) {
       if (cancelledRef.current !== id) return
       setError(parseError(err))
@@ -91,7 +100,7 @@ export function useRegistry(wallet) {
   }, [readContract, address, isConnected])
 
   useEffect(() => {
-    if (!isConnected || !readContract) return
+    if (!readContract) return
 
     let cancelled = false
 
@@ -105,10 +114,9 @@ export function useRegistry(wallet) {
           throw new Error('No contract found at the configured address')
         }
 
-        const [ownerAddr, allAddresses, eduStatus] = await Promise.all([
+        const [ownerAddr, allAddresses] = await Promise.all([
           readContract.owner(),
           readContract.getAllEducators(),
-          address ? readContract.isEducator(address) : Promise.resolve(false),
         ])
 
         if (cancelled) return
@@ -124,7 +132,15 @@ export function useRegistry(wallet) {
 
         setOwner(ownerAddr)
         setEducators(details)
-        setIsEducator(eduStatus)
+
+        // Check if current user is educator (only when connected)
+        if (isConnected && address) {
+          const eduStatus = await readContract.isEducator(address)
+          if (cancelled) return
+          setIsEducator(eduStatus)
+        } else {
+          setIsEducator(false)
+        }
       } catch (err) {
         if (cancelled) return
         setError(parseError(err))
