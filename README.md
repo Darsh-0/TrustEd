@@ -1,5 +1,7 @@
+![JavaScript](https://img.shields.io/badge/JavaScript-ES2022-F7DF1E?logo=javascript&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?logo=typescript&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-26-339933?logo=nodedotjs&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-26.1.1-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5.2-000000?logo=express&logoColor=white)
 ![Ethers.js](https://img.shields.io/badge/Ethers.js-6.17-2535A0?logo=ethers&logoColor=white)
 ![Resend](https://img.shields.io/badge/Resend-6.18-000000?logo=resend&logoColor=white)
 ![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react&logoColor=black)
@@ -9,7 +11,7 @@
 ![ESLint](https://img.shields.io/badge/ESLint-10.6-4B32C3?logo=eslint&logoColor=white)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8-363636?logo=solidity&logoColor=white)
 ![Foundry](https://img.shields.io/badge/Foundry-Forge-B92122?logo=ethereum&logoColor=white)
-[![Remix](https://img.shields.io/badge/Remix-1C1C1C?logo=ethereum&logoColor=white)](https://remix.ethereum.org/)
+![Remix](https://img.shields.io/badge/Remix-1C1C1C?logo=ethereum&logoColor=white)(https://remix.ethereum.org/)
 
 # TrustEd: A decentralized, DAO-verified credential registry that proves your degree is real without exposing your data.
 
