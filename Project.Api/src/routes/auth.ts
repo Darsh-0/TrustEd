@@ -1,6 +1,12 @@
 import { Router } from 'express'
 import { ethers } from 'ethers'
 import { randomBytes } from 'crypto'
+import { isAccredited } from '../dao.js'
+
+
+const nonces = new Map()
+const presentations = new Map()
+
 
 export const authRouter = Router()
 
@@ -76,4 +82,86 @@ function buildMessage(address: string, nonce: string): string {
 		`Address: ${address}`,
 		`Nonce: ${nonce}`,
 	].join('\n')
+}
+
+// ── Presentation flow (graduate shares → employer verifies) ──
+
+interface Credential {
+	id: string
+	issuer: string
+	subject: string
+	claim: string
+	issuedAt: string
+}
+
+interface Presentation {
+	credential: Credential
+	credentialSignature: string
+	nonce: string
+	holderSignature: string
+}
+
+const PRESENT_NONCE_TTL_MS = 10 * 60 * 1000  // 10 min to build+share
+const SHARE_TTL_MS = 24 * 60 * 60 * 1000     // link valid 24h
+
+// 1) Graduate's device asks for a nonce to sign
+authRouter.get('/present/nonce', (_req, res) => {
+	const nonce = randomBytes(16).toString('hex')
+	nonces.set(nonce, Date.now() + PRESENT_NONCE_TTL_MS)
+	res.json({ nonce })
+})
+
+// 2) Graduate posts the built presentation, gets a share token
+authRouter.post('/present', (req, res) => {
+	const { presentation } = req.body ?? {}
+	if (!presentation?.nonce || !nonces.has(presentation.nonce)) {
+		return res.status(400).json({ error: 'invalid nonce' })
+	}
+	const token = randomBytes(24).toString('hex')
+	presentations.set(token, { presentation, expires: Date.now() + SHARE_TTL_MS })
+	res.json({ shareUrl: `http://localhost:5173/verify?token=${token}` })
+})
+
+// 3) Employer opens the link → redeem + run the five checks
+authRouter.get('/redeem/:token', async (req, res) => {
+	const entry = presentations.get(req.params.token)
+	if (!entry || Date.now() > entry.expires) {
+		return res.status(404).json({ error: 'link invalid or expired' })
+	}
+	const result = await verifyPresentation(entry.presentation)
+	presentations.delete(req.params.token)          // single-use token
+	nonces.delete(entry.presentation.nonce)          // single-use nonce
+	res.json(result)
+})
+
+async function verifyPresentation(p: Presentation) {
+	// 1. nonce we issued, still valid
+	const nonceExpires = nonces.get(p.nonce)
+	if (!nonceExpires || Date.now() > nonceExpires) {
+		return { ok: false, reason: 'nonce invalid or expired' }
+	}
+
+	// 2. sharer controls the subject wallet
+	const holderMsg = `Verify credential ${p.credential.id} with nonce ${p.nonce}`
+	let holder: string
+	try { holder = ethers.verifyMessage(holderMsg, p.holderSignature).toLowerCase() }
+	catch { return { ok: false, reason: 'malformed holder signature' } }
+	if (holder !== p.credential.subject.toLowerCase()) {
+		return { ok: false, reason: 'sharer does not control this credential' }
+	}
+
+	// 3. university's signature on the credential is valid
+	const credMsg = JSON.stringify(p.credential)
+	let issuer: string
+	try { issuer = ethers.verifyMessage(credMsg, p.credentialSignature).toLowerCase() }
+	catch { return { ok: false, reason: 'malformed credential signature' } }
+	if (issuer !== p.credential.issuer.toLowerCase()) {
+		return { ok: false, reason: 'credential signature does not match issuer' }
+	}
+
+	// 4. issuer is DAO-accredited
+	const recognised = await isAccredited(issuer)
+	if (!recognised) return { ok: false, reason: 'issuer is not an accredited university' }
+
+	return { ok: true, degree: p.credential.claim, issuer, holder, issuedAt: p.credential.issuedAt }
 }
