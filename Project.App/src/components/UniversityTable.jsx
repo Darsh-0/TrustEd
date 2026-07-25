@@ -96,7 +96,7 @@ export function UniversityTable({ universities, address }) {
                 setPage(0);
               }}
               aria-label="Filter by country"
-              className="input appearance-none bg-surface-container-lowest pl-9 pr-9"
+              className="input appearance-none bg-surface-container-lowest pl-9 pr-9 cursoir-pointer"
             >
               {countries.map((c) => (
                 <option key={c} value={c}>

@@ -286,7 +286,7 @@ export function IssueDegreePage() {
         <div>
           <button
             type="submit"
-            className="btn-primary flex w-full items-center justify-center gap-2 py-4 text-base"
+            className="btn-primary flex w-full items-center justify-center gap-2 py-4 text-base cursor-pointer"
             disabled={submitting}
           >
             {submitting ? "Signing & Sending..." : "Issue Degree"}
