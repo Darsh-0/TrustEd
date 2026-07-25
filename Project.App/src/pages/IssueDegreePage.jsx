@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { isAddress, BrowserProvider } from 'ethers'
 import { useWallet } from '../hooks/useWallet'
-import { useRegistry } from '../hooks/useRegistry'
+import { useAccreditation } from '../hooks/useAccreditation'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
@@ -14,8 +14,7 @@ function Gate({ message }) {
 export function IssueDegreePage() {
   const wallet = useWallet()
   const { isConnected, networkName, truncatedAddress } = wallet
-  const registry = useRegistry(wallet)
-  const { isEducator, loading, wrongNetwork, notConfigured } = registry
+  const { isAccredited, loading, wrongNetwork, notConfigured } = useAccreditation(wallet)
 
   const [graduateAddress, setGraduateAddress] = useState('')
   const [degreeName, setDegreeName] = useState('')
@@ -146,11 +145,11 @@ export function IssueDegreePage() {
     )
   }
 
-  if (!isEducator) {
+  if (!isAccredited) {
     return (
       <section>
         {header}
-        <Gate message="You must be a verified educator to issue degrees." />
+        <Gate message="You must be an accredited university to issue degrees." />
       </section>
     )
   }
