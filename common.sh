@@ -3,6 +3,11 @@
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# Ensure Foundry binaries are on PATH (installed via foundryup to ~/.foundry/bin)
+if [ -d "$HOME/.foundry/bin" ]; then
+  export PATH="$HOME/.foundry/bin:$PATH"
+fi
+
 ANVIL_PORT="${ANVIL_PORT:-8545}"
 RPC_URL="${RPC_URL:-http://127.0.0.1:${ANVIL_PORT}}"
 CHAIN_ID="${CHAIN_ID:-31337}"
