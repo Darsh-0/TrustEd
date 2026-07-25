@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import studentNormal from "../assets/normal.png";
+import studentNormal from "../assets/hero.png";
 
 export function LandingPage() {
   return (

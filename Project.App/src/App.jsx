@@ -11,7 +11,7 @@ import PocPage from "./pages/POC.jsx";
 import ClaimPage from "./pages/ClaimPage.jsx";
 import VerifyPage from "./pages/VerifyPage";
 import SharePage from "./pages/SharePage.jsx";
-import logo from "./assets/ChatGPT_Image_Jul_25_2026_03_49_07_PM.png";
+import logo from "./assets/logo_full_transparent.png";
 
 function App() {
   const wallet = useWallet();
