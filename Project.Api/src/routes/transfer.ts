@@ -56,7 +56,7 @@ transferRouter.post("/issue", async (req, res) => {
   if (!baseUrl) throw new Error("APP_BASE_URL is not set");
   const link = `${baseUrl}/claim?token=${token}`;
   pending.set(token, {
-    credential,
+    credential,i
     signature,
     expires: Date.now() + 7 * 864e5,
   }); // 7 days
