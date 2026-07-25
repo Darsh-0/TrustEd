@@ -11,11 +11,7 @@ import VerifyPage from "./pages/VerifyPage";
 import SharePage from "./pages/SharePage.jsx";
 
 const navLinkClass = ({ isActive }) =>
-  `font-label text-sm font-semibold tracking-wide transition-colors ${
-    isActive
-      ? "text-on-surface underline decoration-2 underline-offset-8"
-      : "text-on-surface-variant hover:text-on-surface"
-  }`;
+  `nav-link ${isActive ? "nav-link-active" : ""}`;
 
 function App() {
   const wallet = useWallet();
@@ -37,7 +33,6 @@ function App() {
             >
               TrustEd
             </Link>
-
             <nav className="hidden items-center gap-8 sm:flex">
               <NavLink to="/registry" className={navLinkClass}>
                 Educators
@@ -52,11 +47,9 @@ function App() {
               )}
             </nav>
           </div>
-
           <WalletConnect />
         </div>
       </header>
-
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -67,8 +60,16 @@ function App() {
           <Route path="/claim" element={<ClaimPage />} />
         </Routes>
       </main>
+
+      <footer className="border-t border-surface-container-high">
+        <div className="mx-auto flex w-full max-w-container items-center justify-between gap-4 px-6 py-8 text-sm text-on-surface-variant sm:px-10">
+          <span className="font-headline text-xl font-extrabold tracking-tight text-on-surface">
+            TrustEd
+          </span>
+          <span>© {new Date().getFullYear()}. All rights reserved.</span>
+        </div>
+      </footer>
     </div>
   );
 }
-
 export default App;
